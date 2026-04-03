@@ -15,10 +15,10 @@ try {
 
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo "✅ Database connected successfully!";
-
 } catch (PDOException $e) {
-    echo "❌ Connection failed: " . $e->getMessage();
+    die(json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]));
 }
-
 ?>

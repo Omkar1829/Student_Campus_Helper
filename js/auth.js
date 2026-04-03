@@ -27,13 +27,11 @@ function switchTab(tab) {
     }
 }
 
-// Clear all error messages
 function clearErrors() {
     document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     document.querySelectorAll('.success-message').forEach(el => el.textContent = '');
 }
 
-// Show error message
 function showError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -41,7 +39,6 @@ function showError(elementId, message) {
     }
 }
 
-// Show success message
 function showSuccess(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -49,7 +46,6 @@ function showSuccess(elementId, message) {
     }
 }
 
-// Disable/Enable button
 function setButtonState(buttonId, isLoading) {
     const button = document.getElementById(buttonId);
     if (button) {
@@ -64,166 +60,103 @@ function setButtonState(buttonId, isLoading) {
     }
 }
 
-// LOGIN HANDLER
-function handleLogin() {
-    return async function() {
-    clearErrors();
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
 
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
 
-    // Validation
-    if (!email) {
-        showError('loginEmailError', 'Email is required');
+    if (!email || !password) {
+        alert("All fields required");
         return;
     }
-    if (!password) {
-        showError('loginPasswordError', 'Password is required');
-        return;
-    }
-
-    setButtonState('loginBtn', true);
 
     try {
-        const response = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'login',
-                email: email,
-                password: password
+                email,
+                password
             })
         });
 
-        const data = await response.json();
+        const data = await res.json();
+        console.log("LOGIN RESPONSE:", data);
 
         if (data.success) {
-            // Store JWT token in localStorage
-            localStorage.setItem('authToken', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('token', data.token);
 
-            showSuccess('loginSuccess', 'Login successful! Redirecting...');
-            setTimeout(() => {
-                window.location.href = './profile.html';
-            }, 1500);
+            alert("Login successful");
+
+            window.location.href = './index.html';
+
         } else {
-            showError('loginError', data.message || 'Login failed');
+            alert(data.message);
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showError('loginError', 'An error occurred. Please try again.');
-    } finally {
-        setButtonState('loginBtn', false);
+
+    } catch (err) {
+        console.error(err);
+        alert("Error occurred");
     }
-    };
-}
+});
 
-const loginBtn = document.getElementById('loginBtn');
-if (loginBtn) {
-    loginBtn.addEventListener('click', handleLogin());
-}
 
-// REGISTER HANDLER
-function handleRegister() {
-    return async function() {
-    clearErrors();
+document.getElementById('registerBtn').addEventListener('click', async () => {
 
     const name = document.getElementById('registerName').value.trim();
     const email = document.getElementById('registerEmail').value.trim();
     const branch = document.getElementById('registerBranch').value.trim();
     const semester = document.getElementById('registerSemester').value;
     const password = document.getElementById('registerPassword').value;
-    const confirmPassword = document.getElementById('registerConfirm').value;
+    const confirm_password = document.getElementById('registerConfirm').value;
 
-    // Validation
-    if (!name) {
-        showError('registerNameError', 'Name is required');
-        return;
-    }
-    if (!email) {
-        showError('registerEmailError', 'Email is required');
-        return;
-    }
-    if (!branch) {
-        showError('registerBranchError', 'Branch is required');
-        return;
-    }
-    if (!semester) {
-        showError('registerSemesterError', 'Semester is required');
-        return;
-    }
-    if (!password) {
-        showError('registerPasswordError', 'Password is required');
-        return;
-    }
-    if (password.length < 6) {
-        showError('registerPasswordError', 'Password must be at least 6 characters');
-        return;
-    }
-    if (!confirmPassword) {
-        showError('registerConfirmError', 'Please confirm your password');
-        return;
-    }
-    if (password !== confirmPassword) {
-        showError('registerConfirmError', 'Passwords do not match');
+    if (!name || !email || !branch || !semester || !password || !confirm_password) {
+        alert("All fields required");
         return;
     }
 
-    setButtonState('registerBtn', true);
+    if (password !== confirm_password) {
+        alert("Passwords do not match");
+        return;
+    }
 
     try {
-        const response = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'register',
-                name: name,
-                email: email,
-                branch: branch,
-                semester: semester,
-                password: password,
-                confirm_password: confirmPassword
+                name,
+                email,
+                course: branch,
+                semester,
+                password,
+                confirm_password
             })
         });
 
-        const data = await response.json();
+        const data = await res.json();
+        console.log("REGISTER RESPONSE:", data);
 
         if (data.success) {
-            showSuccess('registerSuccess', 'Registration successful! Switching to login...');
-            document.getElementById('registerName').value = '';
-            document.getElementById('registerEmail').value = '';
-            document.getElementById('registerBranch').value = '';
-            document.getElementById('registerSemester').value = '';
-            document.getElementById('registerPassword').value = '';
-            document.getElementById('registerConfirm').value = '';
+            alert("Registered successfully");
 
-            setTimeout(() => {
-                switchTab('login');
-                document.getElementById('loginEmail').value = email;
-            }, 1500);
+            document.getElementById('loginEmail').value = email;
+            switchTab('login');
+
         } else {
-            showError('registerError', data.message || 'Registration failed');
+            alert(data.message);
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showError('registerError', 'An error occurred. Please try again.');
-    } finally {
-        setButtonState('registerBtn', false);
+
+    } catch (err) {
+        console.error(err);
+        alert("Error occurred");
     }
-    };
-}
+});
 
-const registerBtn = document.getElementById('registerBtn');
-if (registerBtn) {
-    registerBtn.addEventListener('click', handleRegister());
-}
-
-// Check if user is already logged in and redirect
 window.addEventListener('DOMContentLoaded', () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn === 'true') {
