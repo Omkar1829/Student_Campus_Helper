@@ -30,7 +30,7 @@
             <div class="flex gap-3">
                 <!-- <button class="px-4 py-2 border rounded-lg cursor-pointer">🌙</button> -->
                 <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-indigo-700">
-                    <a href="./profile.html">Profile</a>
+                    <a href="./login-register.html">Login</a>
                 </button>
             </div>
         </div>
@@ -48,10 +48,10 @@
 
         <div class="flex justify-center gap-4">
             <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg cursor-pointer hover:bg-indigo-700">
-                Get Started
+                <a href="./login-register.html">Get Started</a>
             </button>
             <button class="border px-6 py-3 rounded-lg cursor-pointer hover:bg-gray-100">
-                Sign In
+                <a href="./login-register.html">Sign In</a>
             </button>
         </div>
     </section>
@@ -261,7 +261,7 @@
             </p>
 
             <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg cursor-pointer hover:bg-indigo-700">
-                Get Started Now
+                <a href="./login-register.html">Get Started Now</a>
             </button>
         </div>
     </section>
@@ -303,6 +303,23 @@
             © 2024 Smart Campus Helper
         </p>
     </footer>
+
+    <script>
+        // Check if user is logged in on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const token = localStorage.getItem('authToken');
+            
+            if (isLoggedIn && token) {
+                // User is logged in, show profile link
+                const loginBtn = document.querySelector('.bg-indigo-600 a[href="./login-register.html"]');
+                if (loginBtn) {
+                    loginBtn.href = './profile.html';
+                    loginBtn.textContent = 'Profile';
+                }
+            }
+        });
+    </script>
 
 </body>
 
