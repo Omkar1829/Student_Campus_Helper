@@ -65,6 +65,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
 
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
+    const ip_address = await fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => data.ip).catch(() => 'Unknown');
 
     if (!email || !password) {
         alert("All fields required");
@@ -78,7 +79,8 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
             body: JSON.stringify({
                 action: 'login',
                 email,
-                password
+                password,
+                ip_address
             })
         });
 

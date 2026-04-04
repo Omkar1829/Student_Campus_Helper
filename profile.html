@@ -336,7 +336,6 @@
             }
         }
 
-        // Logout handler
         function logout() {
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
@@ -348,7 +347,6 @@
         document.getElementById('logoutBtn')?.addEventListener('click', logout);
         document.getElementById('logoutBtn2')?.addEventListener('click', logout);
 
-        // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
             if (checkAuthentication()) {
                 fetchUserData();

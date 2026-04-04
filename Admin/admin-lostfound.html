@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lost & Found Management</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+</head>
+
+<body class="bg-gray-50 text-gray-800 flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white border-r min-h-screen p-6">
+        <h2 class="text-xl font-bold text-indigo-600 mb-8">📘 Admin Panel</h2>
+
+        <nav class="space-y-3 text-gray-600">
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-users.html">Students</a>
+            <a href="admin-notes.html">Notes</a>
+            <a href="admin-events.html">Events</a>
+            <a href="admin-timetable.html">Timetable</a>
+            <a href="#" class="text-indigo-600 font-semibold">Lost & Found</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1">
+
+        <!-- TOPBAR -->
+        <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+            <h1 class="text-lg font-semibold">Lost & Found Management</h1>
+
+            <button onclick="openModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                + Add Item
+            </button>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="p-6">
+
+            <!-- SEARCH -->
+            <div class="mb-4">
+                <input id="search" oninput="searchItems()" type="text" placeholder="Search items..."
+                    class="w-full border px-4 py-2 rounded-lg">
+            </div>
+
+            <!-- TABLE -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+
+                <table class="w-full text-sm">
+
+                    <thead class="bg-gray-100 text-gray-600">
+                        <tr>
+                            <th class="p-4">Item</th>
+                            <th>Status</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL (ADD / EDIT) -->
+    <div id="modal" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center">
+
+        <div class="bg-white p-6 rounded-xl w-96">
+
+            <h2 class="text-lg font-bold mb-4">Add Item</h2>
+
+            <input id="item" placeholder="Item Name" class="w-full border p-2 mb-2 rounded">
+            <input id="location" placeholder="Location" class="w-full border p-2 mb-2 rounded">
+            <input id="phone" placeholder="Contact" class="w-full border p-2 mb-2 rounded">
+
+            <select id="status" class="w-full border p-2 mb-4 rounded">
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
+            </select>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal()" class="border px-4 py-2 rounded">Cancel</button>
+                <button onclick="saveItem()" class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- DETAILS POPUP -->
+    <div id="detailsPopup" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center">
+
+        <div class="bg-white p-6 rounded-xl w-96">
+
+            <h2 class="text-lg font-bold mb-4">Item Details</h2>
+
+            <p id="detailContent"></p>
+
+            <div class="text-right mt-4">
+                <button onclick="closeDetails()" class="bg-indigo-600 text-white px-4 py-2 rounded">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+        let items = [
+            { id: 1, item: "Wallet", location: "Library", phone: "123456", status: "Lost", date: "Mar 20" },
+            { id: 2, item: "Bottle", location: "Ground", phone: "987654", status: "Found", date: "Mar 21" }
+        ];
+
+        let editId = null;
+
+        function render(data = items) {
+            const body = document.getElementById("tableBody");
+            body.innerHTML = "";
+
+            data.forEach(i => {
+                body.innerHTML += `
+<tr class="border-t hover:bg-gray-50 cursor-pointer" onclick="showDetails(${i.id})">
+
+<td class="p-4">${i.item}</td>
+
+<td>
+<span class="px-2 py-1 rounded text-xs ${i.status == 'Lost' ? 'bg-red-200' : 'bg-green-200'}">
+${i.status}
+</span>
+</td>
+
+<td>${i.location}</td>
+<td>${i.date}</td>
+
+<td onclick="event.stopPropagation()">
+<button onclick="editItem(${i.id})" class="text-indigo-600">Edit</button>
+<button onclick="deleteItem(${i.id})" class="text-red-500 ml-2">Delete</button>
+</td>
+
+</tr>`;
+            });
+        }
+
+        render();
+
+        function openModal() {
+            document.getElementById("modal").classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("modal").classList.add("hidden");
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById("item").value = "";
+            document.getElementById("location").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("status").value = "Lost";
+            editId = null;
+        }
+
+        function saveItem() {
+            const item = document.getElementById("item").value;
+            const location = document.getElementById("location").value;
+            const phone = document.getElementById("phone").value;
+            const status = document.getElementById("status").value;
+
+            if (editId) {
+                items = items.map(i => i.id == editId ? { ...i, item, location, phone, status } : i);
+            } else {
+                items.push({
+                    id: Date.now(),
+                    item, location, phone, status,
+                    date: new Date().toLocaleDateString()
+                });
+            }
+
+            closeModal();
+            render();
+        }
+
+        function deleteItem(id) {
+            items = items.filter(i => i.id !== id);
+            render();
+        }
+
+        function editItem(id) {
+            const i = items.find(i => i.id === id);
+
+            document.getElementById("item").value = i.item;
+            document.getElementById("location").value = i.location;
+            document.getElementById("phone").value = i.phone;
+            document.getElementById("status").value = i.status;
+
+            editId = id;
+            openModal();
+        }
+
+        function searchItems() {
+            const value = document.getElementById("search").value.toLowerCase();
+
+            const filtered = items.filter(i =>
+                i.item.toLowerCase().includes(value) ||
+                i.location.toLowerCase().includes(value)
+            );
+
+            render(filtered);
+        }
+
+        function showDetails(id) {
+            const i = items.find(i => i.id === id);
+
+            document.getElementById("detailContent").innerHTML = `
+<b>Item:</b> ${i.item}<br>
+<b>Status:</b> ${i.status}<br>
+<b>Location:</b> ${i.location}<br>
+<b>Contact:</b> ${i.phone}<br>
+<b>Date:</b> ${i.date}
+`;
+
+            document.getElementById("detailsPopup").classList.remove("hidden");
+        }
+
+        function closeDetails() {
+            document.getElementById("detailsPopup").classList.add("hidden");
+        }
+
+    </script>
+
+</body>
+
+</html>

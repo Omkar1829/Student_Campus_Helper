@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lost & Found</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- NAVBAR -->
+    <header class="w-full bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+
+            <div class="text-xl font-bold text-indigo-600">
+                <i class="fa-solid fa-book-open"></i> Smart Campus
+            </div>
+
+            <nav class="hidden md:flex gap-6 font-medium">
+                <a href="index.html">Dashboard</a>
+                <a href="notes.html">Notes</a>
+                <a href="timetable.html">Timetable</a>
+                <a href="events.html">Events</a>
+                <a href="#" class="text-indigo-600 font-semibold">Lost & Found</a>
+            </nav>
+
+            <div class="flex gap-3">
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                    <a href="./profile.html">Profile</a>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HEADER -->
+    <section class="bg-indigo-100 px-8 py-10 flex justify-between items-center">
+        <div>
+            <h2 class="text-3xl font-bold">♡ Lost & Found</h2>
+            <p class="text-gray-600">4 lost • 4 found items</p>
+        </div>
+
+        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg">
+            + Report Item
+        </button>
+    </section>
+
+    <!-- STATS -->
+    <section class="max-w-6xl mx-auto grid md:grid-cols-4 gap-4 px-6 mt-6">
+
+        <div class="bg-blue-100 p-5 rounded-xl text-center">
+            <h3 class="text-2xl font-bold text-indigo-600">8</h3>
+            <p class="text-sm text-gray-600">Total Items</p>
+        </div>
+
+        <div class="bg-red-100 p-5 rounded-xl text-center">
+            <h3 class="text-2xl font-bold text-red-500">4</h3>
+            <p class="text-sm text-gray-600">Lost</p>
+        </div>
+
+        <div class="bg-green-100 p-5 rounded-xl text-center">
+            <h3 class="text-2xl font-bold text-green-600">4</h3>
+            <p class="text-sm text-gray-600">Found</p>
+        </div>
+
+        <div class="bg-purple-100 p-5 rounded-xl text-center">
+            <h3 class="text-2xl font-bold text-purple-600">50%</h3>
+            <p class="text-sm text-gray-600">Recovery Rate</p>
+        </div>
+
+    </section>
+
+    <!-- SEARCH + FILTER -->
+    <div class="max-w-6xl mx-auto mt-6 flex gap-3 px-6 flex-wrap">
+
+        <input type="text" placeholder="Search items..." class="flex-1 border px-4 py-2 rounded-lg">
+
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">All Items</button>
+        <button class="border px-4 py-2 rounded-lg">Lost</button>
+        <button class="border px-4 py-2 rounded-lg">Found</button>
+        <button class="border px-4 py-2 rounded-lg">Latest First</button>
+
+    </div>
+
+    <!-- ITEMS GRID -->
+    <section class="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-6">
+
+        <!-- ITEM -->
+        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+
+            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
+                ♡
+            </div>
+
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-semibold">Student ID Card</h3>
+                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
+                </div>
+
+                <p class="text-sm text-gray-500 mt-1">ID card for John Smith</p>
+
+                <div class="text-sm mt-3 space-y-1 text-gray-600">
+                    <p>📍 Administration Building</p>
+                    <p>📅 March 21, 2024</p>
+                    <p>📞 +1-555-0107</p>
+                </div>
+
+                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
+                    Claim Item
+                </button>
+            </div>
+        </div>
+
+        <!-- ITEM -->
+        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+
+            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
+                ♡
+            </div>
+
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-semibold">Black Backpack</h3>
+                    <span class="bg-red-200 text-red-700 px-2 py-1 text-xs rounded-full">Lost</span>
+                </div>
+
+                <p class="text-sm text-gray-500 mt-1">North Face black backpack</p>
+
+                <div class="text-sm mt-3 space-y-1 text-gray-600">
+                    <p>📍 Library</p>
+                    <p>📅 March 20, 2024</p>
+                    <p>📞 +1-555-0101</p>
+                </div>
+
+                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
+                    Report Info
+                </button>
+            </div>
+        </div>
+
+        <!-- ITEM -->
+        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+
+            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
+                ♡
+            </div>
+
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-semibold">Navy Blue Jacket</h3>
+                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
+                </div>
+
+                <p class="text-sm text-gray-500 mt-1">Winter jacket size M</p>
+
+                <div class="text-sm mt-3 space-y-1 text-gray-600">
+                    <p>📍 Student Center</p>
+                    <p>📅 March 19, 2024</p>
+                    <p>📞 +1-555-0104</p>
+                </div>
+
+                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
+                    Claim Item
+                </button>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- TIPS -->
+    <section class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 px-6 mb-10">
+
+        <div class="bg-blue-100 p-6 rounded-xl">
+            <h3 class="font-semibold mb-3">Tips for Finding Lost Items</h3>
+            <ul class="text-sm space-y-2">
+                <li>1. Check help desk first</li>
+                <li>2. Describe item clearly</li>
+                <li>3. Keep contact updated</li>
+                <li>4. Check regularly</li>
+            </ul>
+        </div>
+
+        <div class="bg-green-100 p-6 rounded-xl">
+            <h3 class="font-semibold mb-3">Found an Item?</h3>
+            <ul class="text-sm space-y-2">
+                <li>• Click "Report Item"</li>
+                <li>• Add details & location</li>
+                <li>• Add contact info</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white py-12 px-6 border-t">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+
+            <div>
+                <h3 class="font-bold text-lg text-indigo-600">Smart Campus</h3>
+                <p class="text-sm text-gray-600 mt-2">
+                    Your personal campus management assistant
+                </p>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-2">Quick Links</h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>Dashboard</li>
+                    <li>Notes</li>
+                    <li>Timetable</li>
+                    <li>Events</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-2">More</h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>Lost & Found</li>
+                    <li>Profile</li>
+                    <li>Login</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <p class="text-center text-sm text-gray-500 mt-8">
+            © 2024 Smart Campus Helper
+        </p>
+    </footer>
+
+</body>
+
+</html>

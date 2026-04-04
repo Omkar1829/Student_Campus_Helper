@@ -80,6 +80,7 @@ else if ($action === 'login') {
 
     $email = trim($input['email'] ?? '');
     $password = $input['password'] ?? '';
+    $ip_address = $input['ip_address'] ?? $_SERVER['REMOTE_ADDR'];
 
     if (!$email || !$password) {
         echo json_encode(['success' => false, 'message' => 'Email & password required']);
@@ -101,6 +102,9 @@ else if ($action === 'login') {
             echo json_encode(['success' => false, 'message' => 'Wrong password']);
             exit;
         }
+
+        $log = $conn->prepare("INSERT INTO login_logs (user_id, ip_address) VALUES (?, ?)");
+        $log->execute([$user['id'], $ip_address]);
 
         $token_data = [
             'id' => $user['id'],
