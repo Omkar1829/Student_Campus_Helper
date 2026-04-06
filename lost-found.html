@@ -1,239 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
 
+
+   <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus</title>
 
-    <title>Lost & Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
+    <script defer src="./js/lost.js"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- NAVBAR -->
-    <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
 
-            <div class="text-xl font-bold text-indigo-600">
-                <i class="fa-solid fa-book-open"></i> Smart Campus
-            </div>
+<nav class="flex justify-center items-center gap-10 mt-5">
+    <h1 class="text-blue-900 font-extrabold ml-2 mr-24 text-xl">
+        <i class="fa-solid fa-book-open mr-2"></i>Smart Campus
+    </h1>
+    <a href="#" class="text-gray-700 hover:text-blue-700">Dashboard</a>
+    <a href="#" class="text-gray-700 hover:text-blue-700">Notes</a>
+    <a href="#" class="text-gray-700 hover:text-blue-700">Timetable</a>
+    <a href="#" class="text-gray-700 hover:text-blue-700">Events</a>
+    <a href="#" class="text-gray-700 hover:text-blue-700">Lost & Found</a>
+    <button class="bg-blue-900 text-white rounded px-3 py-1 flex items-center gap-1">
+        <i class="fa-solid fa-file-import"></i>Profile
+    </button>
+</nav>
 
-            <nav class="hidden md:flex gap-6 font-medium">
-                <a href="index.html">Dashboard</a>
-                <a href="notes.html">Notes</a>
-                <a href="timetable.html">Timetable</a>
-                <a href="events.html">Events</a>
-                <a href="#" class="text-indigo-600 font-semibold">Lost & Found</a>
-            </nav>
 
-            <div class="flex gap-3">
-                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                    <a href="./profile.html">Profile</a>
-                </button>
-            </div>
-        </div>
-    </header>
+<div class="mt-2 h-20 bg-gray-200">
 
-    <!-- HEADER -->
-    <section class="bg-indigo-100 px-8 py-10 flex justify-between items-center">
-        <div>
-            <h2 class="text-3xl font-bold">♡ Lost & Found</h2>
-            <p class="text-gray-600">4 lost • 4 found items</p>
-        </div>
+   
+    <div class="flex items-center justify-between h-full px-4 max-w-5xl mx-auto">
 
-        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg">
-            + Report Item
+    
+        <h1 class="text-lg font-bold">Lost & Found</h1>
+
+        
+        <button  id="openModal" class="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded">
+            <i class="fa-solid fa-plus"></i>
+            Report Lost Item
         </button>
-    </section>
-
-    <!-- STATS -->
-    <section class="max-w-6xl mx-auto grid md:grid-cols-4 gap-4 px-6 mt-6">
-
-        <div class="bg-blue-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-indigo-600">8</h3>
-            <p class="text-sm text-gray-600">Total Items</p>
-        </div>
-
-        <div class="bg-red-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-red-500">4</h3>
-            <p class="text-sm text-gray-600">Lost</p>
-        </div>
-
-        <div class="bg-green-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-green-600">4</h3>
-            <p class="text-sm text-gray-600">Found</p>
-        </div>
-
-        <div class="bg-purple-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-purple-600">50%</h3>
-            <p class="text-sm text-gray-600">Recovery Rate</p>
-        </div>
-
-    </section>
-
-    <!-- SEARCH + FILTER -->
-    <div class="max-w-6xl mx-auto mt-6 flex gap-3 px-6 flex-wrap">
-
-        <input type="text" placeholder="Search items..." class="flex-1 border px-4 py-2 rounded-lg">
-
-        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">All Items</button>
-        <button class="border px-4 py-2 rounded-lg">Lost</button>
-        <button class="border px-4 py-2 rounded-lg">Found</button>
-        <button class="border px-4 py-2 rounded-lg">Latest First</button>
-
+ 
+        <button  id="FoundModal" class="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded">
+            <i class="fa-solid fa-plus"></i>
+            Report Found Item
+        </button>
     </div>
 
-    <!-- ITEMS GRID -->
-    <section class="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-6">
+</div>
 
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
 
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
+<div class="flex justify-center gap-12 mt-4 flex-wrap">
+    <div class="bg-blue-100 text-center rounded-lg w-48 h-20 flex flex-col justify-center">
+        <h6 id="totalCount" class="text-lg font-bold">0</h6>Total Items
+    </div>
+    <div class="bg-red-200 text-center rounded-lg w-48 h-20 flex flex-col justify-center">
+        <h6   id="lostCount" class="text-lg font-bold">0</h6>Lost
+    </div>
+    <div class="bg-green-200 text-center rounded-lg w-48 h-20 flex flex-col justify-center">
+        <h6  id="foundCount" class="text-lg font-bold">0</h6>Found
+    </div>
+    <div class="bg-purple-200 text-center rounded-lg w-48 h-20 flex flex-col justify-center">
+        <h6  id="recoveryRate" class="text-lg font-bold">0%</h6>Recovery Rate
+    </div>
+</div>
 
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Student ID Card</h3>
-                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
-                </div>
+<hr class="my-5">
 
-                <p class="text-sm text-gray-500 mt-1">ID card for John Smith</p>
 
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Administration Building</p>
-                    <p>📅 March 21, 2024</p>
-                    <p>📞 +1-555-0107</p>
-                </div>
+<div class="flex items-center gap-4 ml-64 mb-4 flex-wrap">
+    <div class="relative w-80">
+        <input id="searchInput" type="search" placeholder="Search Items" class="w-full pl-10 pr-2 py-2 rounded border border-gray-300">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+    </div>
 
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Claim Item
-                </button>
-            </div>
+    <button id="allBtn" class="bg-gray-200 rounded px-3 py-1 text-sm">All Items</button>
+    <button id="lostBtn" class="bg-gray-200 rounded px-3 py-1 text-sm">Lost</button>
+    <button id="foundBtn" class="bg-gray-200 rounded px-3 py-1 text-sm">Found</button>
+    
+</div>
+
+<hr class="mb-4">
+
+
+<div id="cardContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mx-10">
+
+  
+    <div class="card found bg-blue-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+       <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/id.jpg" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">Student ID Card</h3>
+            <button class="bg-green-300 text-xs px-2 py-1 rounded">Found</button>
+        </div>
+        <p class="text-sm">Id card for John Smith, batch 2023</p>
+        <p class="text-sm">Administration Building</p>
+        <p class="text-sm">March 21, 2026</p>
+        <p class="text-sm">+1-555-0107</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Claim Item</button>
+    </div>
+
+<!--    
+    <div class="card lost bg-red-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+       <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/bag.png" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">Black Backpack</h3>
+            <button class="bg-red-300 text-xs px-2 py-1 rounded">Lost</button>
+        </div>
+        <p class="text-sm">North Face black backpack</p>
+        <p class="text-sm">Library</p>
+        <p class="text-sm">March 20, 2026</p>
+        <p class="text-sm">+1-555-0101</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Report Info</button>
+    </div> -->
+
+<!--    
+    <div class="card found bg-green-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+       <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/jacket.jpg" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">Navy Blue Jacket</h3>
+            <button class="bg-green-300 text-xs px-2 py-1 rounded">Found</button>
+        </div>
+        <p class="text-sm">Winter jacket</p>
+        <p class="text-sm">Student Center</p>
+        <p class="text-sm">March 19, 2026</p>
+        <p class="text-sm">+1-555-0104</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Claim Item</button>
+    </div> -->
+
+   
+    <!-- <div class="card lost bg-purple-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+        <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/umbrella.png" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">Red Umbrella</h3>
+            <button class="bg-red-300 text-xs px-2 py-1 rounded">Lost</button>
+        </div>
+        <p class="text-sm">Compact umbrella</p>
+        <p class="text-sm">Cafeteria</p>
+        <p class="text-sm">March 18, 2026</p>
+        <p class="text-sm">+1-555-0102</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Report item</button>
+    </div> -->
+
+  
+    <!-- <div class="card found bg-yellow-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+        <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/drive.jpg" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">USB Drive</h3>
+            <button class="bg-green-300 text-xs px-2 py-1 rounded">Found</button>
+        </div>
+        <p class="text-sm">Semester Projects</p>
+        <p class="text-sm">Lecture Hall</p>
+        <p class="text-sm">March 17, 2026</p>
+        <p class="text-sm">+1-555-0105</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Claim Item</button>
+    </div> -->
+
+  
+    <!-- <div class="card found bg-pink-50 rounded-lg border border-black h-[360px] p-4 flex flex-col gap-2">
+   <div class="h-36 w-full overflow-hidden rounded mb-2 bg-gray-100">
+            <img src="images/airpods.png" class="w-full h-full object-contain">
+        </div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">AirPods Pro</h3>
+            <button class="bg-green-300 text-xs px-2 py-1 rounded">Found</button>
+        </div>
+        <p class="text-sm">Charging case</p>
+        <p class="text-sm">Dormitory</p>
+        <p class="text-sm">March 16, 2026</p>
+        <p class="text-sm">+1-555-0108</p>
+        <button class="bg-blue-200 text-xs px-2 py-1 rounded self-start">Claim Item</button>
+    </div> -->
+
+</div>
+
+
+
+ <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+
+    <div class="bg-white p-6 rounded-lg w-96">
+
+        <h2 class="text-xl font-bold mb-4">Report Lost Item</h2>
+
+        <input id="imageInput" type="file" accept="image/*" class="w-full border p-2 mb-2 rounded">
+
+        <input id="itemName" type="text" placeholder="Item Name" class="w-full border p-2 mb-2 rounded">
+
+        <textarea id="description" placeholder="Description" class="w-full border p-2 mb-2 rounded"></textarea>
+
+        <input id="location" type="text" placeholder="Location" class="w-full border p-2 mb-2 rounded">
+
+        <input   id="date" type="date" class="w-full border p-2 mb-4 rounded">
+
+      
+        <div class="flex justify-end gap-2">
+            <button id="closeModal" class="px-3 py-1 bg-gray-300 rounded">Cancel</button>
+            <button  id="submitBtn" class="px-3 py-1 bg-blue-600 text-white rounded">Submit</button>
         </div>
 
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+    </div> 
 
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
 
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Black Backpack</h3>
-                    <span class="bg-red-200 text-red-700 px-2 py-1 text-xs rounded-full">Lost</span>
-                </div>
 
-                <p class="text-sm text-gray-500 mt-1">North Face black backpack</p>
 
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Library</p>
-                    <p>📅 March 20, 2024</p>
-                    <p>📞 +1-555-0101</p>
-                </div>
-
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Report Info
-                </button>
-            </div>
-        </div>
-
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
-
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Navy Blue Jacket</h3>
-                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
-                </div>
-
-                <p class="text-sm text-gray-500 mt-1">Winter jacket size M</p>
-
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Student Center</p>
-                    <p>📅 March 19, 2024</p>
-                    <p>📞 +1-555-0104</p>
-                </div>
-
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Claim Item
-                </button>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- TIPS -->
-    <section class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 px-6 mb-10">
-
-        <div class="bg-blue-100 p-6 rounded-xl">
-            <h3 class="font-semibold mb-3">Tips for Finding Lost Items</h3>
-            <ul class="text-sm space-y-2">
-                <li>1. Check help desk first</li>
-                <li>2. Describe item clearly</li>
-                <li>3. Keep contact updated</li>
-                <li>4. Check regularly</li>
-            </ul>
-        </div>
-
-        <div class="bg-green-100 p-6 rounded-xl">
-            <h3 class="font-semibold mb-3">Found an Item?</h3>
-            <ul class="text-sm space-y-2">
-                <li>• Click "Report Item"</li>
-                <li>• Add details & location</li>
-                <li>• Add contact info</li>
-            </ul>
-        </div>
-
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-white py-12 px-6 border-t">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
-
-            <div>
-                <h3 class="font-bold text-lg text-indigo-600">Smart Campus</h3>
-                <p class="text-sm text-gray-600 mt-2">
-                    Your personal campus management assistant
-                </p>
-            </div>
-
-            <div>
-                <h4 class="font-semibold mb-2">Quick Links</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
-                    <li>Dashboard</li>
-                    <li>Notes</li>
-                    <li>Timetable</li>
-                    <li>Events</li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-semibold mb-2">More</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
-                    <li>Lost & Found</li>
-                    <li>Profile</li>
-                    <li>Login</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <p class="text-center text-sm text-gray-500 mt-8">
-            © 2024 Smart Campus Helper
-        </p>
-    </footer>
-
+</div>
 </body>
-
 </html>
