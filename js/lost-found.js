@@ -2,6 +2,60 @@
 let lostFoundFilter = 'all';
 let selectedItemId = null;
 
+const demoLostFoundItems = [
+    {
+        id: 'demo-lf-1',
+        user_id: 0,
+        item_name: 'Sample ID Card',
+        description: 'Demo lost item. Sign in to view real campus lost-and-found reports.',
+        location: 'Library entrance',
+        contact_info: 'Login required',
+        reported_date: '2026-04-04',
+        report_type: 'lost',
+        status: 'open',
+        reported_by: 'Demo Student',
+        image_path: ''
+    },
+    {
+        id: 'demo-lf-2',
+        user_id: 0,
+        item_name: 'Sample Water Bottle',
+        description: 'Demo found item for visitors only. Real reports are private until login.',
+        location: 'Canteen',
+        contact_info: 'Login required',
+        reported_date: '2026-04-05',
+        report_type: 'found',
+        status: 'open',
+        reported_by: 'Campus Desk',
+        image_path: ''
+    },
+    {
+        id: 'demo-lf-3',
+        user_id: 0,
+        item_name: 'Sample Notebook',
+        description: 'Sign in to claim, report, or manage actual lost-and-found items.',
+        location: 'Room 203',
+        contact_info: 'Login required',
+        reported_date: '2026-04-06',
+        report_type: 'lost',
+        status: 'open',
+        reported_by: 'Smart Campus',
+        image_path: ''
+    }
+];
+
+function canClaimItem(item) {
+    const currentUser = CampusApp.getUser();
+    const itemStatus = String(item.status || '').toLowerCase();
+
+    return Boolean(
+        currentUser
+        && String(currentUser.role || '').toLowerCase() !== 'admin'
+        && Number(currentUser.id) !== Number(item.user_id)
+        && !['matched', 'approved', 'resolved', 'distributed'].includes(itemStatus)
+    );
+}
+
 function computeLostFoundStats(items) {
     const lost = items.filter((item) => item.report_type === 'lost').length;
     const found = items.filter((item) => item.report_type === 'found').length;
@@ -38,6 +92,7 @@ function renderLostFound(items) {
         const badgeClasses = item.report_type === 'found'
             ? 'bg-green-200 text-green-700'
             : 'bg-red-200 text-red-700';
+        const canClaim = canClaimItem(item);
 
         return `
             <article class="overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
@@ -60,6 +115,11 @@ function renderLostFound(items) {
                     <button class="mt-4 w-full rounded-xl bg-indigo-600 py-2 font-semibold text-white transition hover:bg-indigo-700" data-item-details="${item.id}">
                         View Details
                     </button>
+                    ${canClaim ? `
+                        <button class="mt-3 w-full rounded-xl bg-emerald-600 py-2 font-semibold text-white transition hover:bg-emerald-700" data-item-claim="${item.id}">
+                            Claim Item
+                        </button>
+                    ` : ''}
                 </div>
             </article>
         `;
@@ -81,6 +141,12 @@ function filterLostFound() {
 }
 
 async function loadLostFound() {
+    if (!CampusApp.isAuthenticated()) {
+        lostFoundState = demoLostFoundItems;
+        filterLostFound();
+        return;
+    }
+
     try {
         const response = await CampusApp.api('getLostFound', {}, { logoutOnUnauthorized: false });
         lostFoundState = response.items || [];
@@ -106,6 +172,16 @@ function toggleDetailsModal(forceState) {
     const modal = document.getElementById('itemDetailsModal');
     const willShow = typeof forceState === 'boolean' ? forceState : modal.classList.contains('hidden');
     modal.classList.toggle('hidden', !willShow);
+}
+
+function toggleClaimModal(forceState) {
+    const modal = document.getElementById('claimItemModal');
+    const willShow = typeof forceState === 'boolean' ? forceState : modal.classList.contains('hidden');
+    modal.classList.toggle('hidden', !willShow);
+
+    if (!willShow) {
+        document.getElementById('claimItemForm')?.reset();
+    }
 }
 
 function openItemDetails(itemId) {
@@ -137,6 +213,8 @@ function openItemDetails(itemId) {
     const currentUser = CampusApp.getUser();
     const isOwner = currentUser && Number(currentUser.id) === Number(item.user_id);
     const isAdmin = currentUser && currentUser.role === 'admin';
+    const canClaim = canClaimItem(item);
+    document.getElementById('claimLostFoundBtn').classList.toggle('hidden', !canClaim);
     document.getElementById('editLostFoundBtn').classList.toggle('hidden', !(isOwner || isAdmin));
     document.getElementById('deleteLostFoundBtn').classList.toggle('hidden', !(isOwner || isAdmin));
 
@@ -219,6 +297,34 @@ async function deleteLostFound() {
     }
 }
 
+async function submitLostFoundClaim(event) {
+    event.preventDefault();
+
+    if (!selectedItemId || !CampusApp.ensureAuth('Please sign in to claim items.')) {
+        return;
+    }
+
+    const button = document.getElementById('submitClaimBtn');
+    const payload = {
+        item_id: selectedItemId,
+        claim_reason: document.getElementById('claimReason').value.trim(),
+        identifying_details: document.getElementById('claimDetails').value.trim(),
+        contact_info: document.getElementById('claimContact').value.trim()
+    };
+
+    try {
+        CampusApp.setButtonLoading(button, true, 'Submit Claim');
+        await CampusApp.api('addLostFoundClaim', payload);
+        CampusApp.showToast('Claim submitted for admin review.', 'success');
+        toggleClaimModal(false);
+        toggleDetailsModal(false);
+    } catch (error) {
+        CampusApp.showToast(error.message, 'error');
+    } finally {
+        CampusApp.setButtonLoading(button, false, 'Submit Claim');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('openLostFoundModal')?.addEventListener('click', () => {
         if (!CampusApp.ensureAuth('Please sign in to report items.')) {
@@ -228,6 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('closeLostFoundModal')?.addEventListener('click', () => toggleReportModal(false));
     document.getElementById('closeItemDetailsModal')?.addEventListener('click', () => toggleDetailsModal(false));
+    document.getElementById('closeClaimItemModal')?.addEventListener('click', () => toggleClaimModal(false));
     document.getElementById('reportItemModal')?.addEventListener('click', (event) => {
         if (event.target.id === 'reportItemModal') {
             toggleReportModal(false);
@@ -238,7 +345,13 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleDetailsModal(false);
         }
     });
+    document.getElementById('claimItemModal')?.addEventListener('click', (event) => {
+        if (event.target.id === 'claimItemModal') {
+            toggleClaimModal(false);
+        }
+    });
     document.getElementById('lostFoundForm')?.addEventListener('submit', saveLostFound);
+    document.getElementById('claimItemForm')?.addEventListener('submit', submitLostFoundClaim);
     document.getElementById('lostFoundSearch')?.addEventListener('input', filterLostFound);
     document.querySelectorAll('[data-lf-filter]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -251,13 +364,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     document.getElementById('lostFoundGrid')?.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-item-details]');
-        if (button) {
-            openItemDetails(button.dataset.itemDetails);
+        const detailsButton = event.target.closest('[data-item-details]');
+        const claimButton = event.target.closest('[data-item-claim]');
+
+        if (detailsButton) {
+            openItemDetails(detailsButton.dataset.itemDetails);
+        }
+
+        if (claimButton) {
+            selectedItemId = claimButton.dataset.itemClaim;
+            toggleClaimModal(true);
         }
     });
     document.getElementById('editLostFoundBtn')?.addEventListener('click', () => fillLostFoundForm(selectedItemId));
     document.getElementById('deleteLostFoundBtn')?.addEventListener('click', deleteLostFound);
+    document.getElementById('claimLostFoundBtn')?.addEventListener('click', () => {
+        toggleDetailsModal(false);
+        toggleClaimModal(true);
+    });
 
     loadLostFound();
 });

@@ -1,5 +1,35 @@
 ﻿let eventsState = [];
 
+const demoEvents = [
+    {
+        id: 'demo-event-1',
+        title: 'Sample Campus Notice',
+        description: 'Demo announcement for visitors. Sign in to view real campus notices.',
+        event_date: '2026-04-08',
+        event_time: '10:00:00',
+        location: 'Notice Board',
+        type: 'announcement'
+    },
+    {
+        id: 'demo-event-2',
+        title: 'Sample Important Seminar',
+        description: 'Demo important event. Real event details are available after login.',
+        event_date: '2026-04-09',
+        event_time: '14:30:00',
+        location: 'Auditorium',
+        type: 'important'
+    },
+    {
+        id: 'demo-event-3',
+        title: 'Sample Club Meetup',
+        description: 'Demo general event for public preview only.',
+        event_date: '2026-04-11',
+        event_time: '16:00:00',
+        location: 'Student Activity Center',
+        type: 'general'
+    }
+];
+
 function isImportantEvent(event) {
     return ['important', 'imp', 'exam', 'placement'].includes(String(event.type || '').toLowerCase());
 }
@@ -22,6 +52,10 @@ function renderEvents(events) {
     const other = document.getElementById('otherEventsGrid');
     const totalLabel = document.getElementById('eventsTotalLabel');
     const importantLabel = document.getElementById('eventsImportantLabel');
+
+    if (!announcements || !important || !other || !totalLabel || !importantLabel) {
+        return;
+    }
 
     totalLabel.textContent = `${events.length} events total`;
     importantLabel.textContent = `${events.filter((item) => isImportantEvent(item)).length} important`;
@@ -58,8 +92,10 @@ function renderEvents(events) {
 }
 
 function filterEvents() {
-    const query = document.getElementById('eventsSearch').value.trim().toLowerCase();
-    const importantOnly = document.getElementById('importantOnlyBtn').dataset.active === 'true';
+    const search = document.getElementById('eventsSearch');
+    const importantButton = document.getElementById('importantOnlyBtn');
+    const query = search ? search.value.trim().toLowerCase() : '';
+    const importantOnly = importantButton ? importantButton.dataset.active === 'true' : false;
     const filtered = eventsState.filter((event) => {
         const matchesQuery = [event.title, event.description, event.category, event.type, event.location].some((value) =>
             String(value || '').toLowerCase().includes(query)
@@ -71,23 +107,35 @@ function filterEvents() {
     renderEvents(filtered);
 }
 
+function renderHomeEvents() {
+    const homeGrid = document.getElementById('homeEventsGrid');
+    if (!homeGrid) {
+        return;
+    }
+
+    const upcoming = eventsState.slice(0, 3);
+    homeGrid.innerHTML = upcoming.map((event) => `
+        <article class="rounded-2xl border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <p class="text-sm font-semibold text-indigo-600">${CampusApp.formatDate(event.event_date)}</p>
+            <h3 class="mt-2 text-xl font-semibold text-slate-900">${CampusApp.escapeHtml(event.title)}</h3>
+            <p class="mt-2 text-sm text-slate-600">${CampusApp.escapeHtml(event.description)}</p>
+        </article>
+    `).join('');
+}
+
 async function loadEvents() {
+    if (!CampusApp.isAuthenticated()) {
+        eventsState = demoEvents;
+        filterEvents();
+        renderHomeEvents();
+        return;
+    }
+
     try {
         const response = await CampusApp.api('getEvents', {}, { logoutOnUnauthorized: false });
         eventsState = response.events || [];
         filterEvents();
-
-        const homeGrid = document.getElementById('homeEventsGrid');
-        if (homeGrid) {
-            const upcoming = eventsState.slice(0, 3);
-            homeGrid.innerHTML = upcoming.map((event) => `
-                <article class="rounded-2xl border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                    <p class="text-sm font-semibold text-indigo-600">${CampusApp.formatDate(event.event_date)}</p>
-                    <h3 class="mt-2 text-xl font-semibold text-slate-900">${event.title}</h3>
-                    <p class="mt-2 text-sm text-slate-600">${event.description}</p>
-                </article>
-            `).join('');
-        }
+        renderHomeEvents();
     } catch (error) {
         const fallbackTargets = ['announcementsGrid', 'importantEventsGrid', 'otherEventsGrid', 'homeEventsGrid'];
         fallbackTargets.forEach((targetId) => {

@@ -140,9 +140,26 @@
                 <p><strong>Reported By:</strong> <span id="detailReporter"></span></p>
             </div>
             <div class="mt-6 flex gap-3">
+                <button id="claimLostFoundBtn" class="hidden flex-1 rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700">Claim Item</button>
                 <button id="editLostFoundBtn" class="hidden flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700">Edit Report</button>
                 <button id="deleteLostFoundBtn" class="hidden flex-1 rounded-xl bg-red-600 px-4 py-3 font-semibold text-white transition hover:bg-red-700">Delete</button>
             </div>
+        </div>
+    </div>
+
+    <div id="claimItemModal" class="fixed inset-0 z-[100] hidden bg-black/50 px-4 py-8">
+        <div class="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="mb-6 flex items-center justify-between">
+                <h3 class="text-2xl font-bold">Claim This Item</h3>
+                <button id="closeClaimItemModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="claimItemForm" class="space-y-4">
+                <p class="rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Your claim will be reviewed by admin. Add clear details that only the real owner would know.</p>
+                <textarea id="claimReason" rows="3" placeholder="Why do you believe this item is yours?" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required></textarea>
+                <textarea id="claimDetails" rows="4" placeholder="Unique identifying details, marks, contents, brand, color, serial number, etc." class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required></textarea>
+                <input id="claimContact" type="text" placeholder="Your contact info for admin follow-up" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                <button id="submitClaimBtn" type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700">Submit Claim</button>
+            </form>
         </div>
     </div>
 

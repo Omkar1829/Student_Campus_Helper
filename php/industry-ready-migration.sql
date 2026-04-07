@@ -37,3 +37,23 @@ END $$;
 
 CREATE INDEX IF NOT EXISTS idx_lost_found_reported_date
 ON lost_found (reported_date DESC);
+
+CREATE TABLE IF NOT EXISTS lost_found_claims (
+    id SERIAL PRIMARY KEY,
+    item_id integer NOT NULL REFERENCES lost_found(id) ON DELETE CASCADE,
+    claimant_user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    claim_reason text NOT NULL,
+    identifying_details text NOT NULL,
+    contact_info varchar(120) NOT NULL,
+    status varchar(20) NOT NULL DEFAULT 'pending',
+    admin_notes text,
+    reviewed_by integer REFERENCES users(id) ON DELETE SET NULL,
+    reviewed_at timestamp,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_lost_found_claims_item_status
+ON lost_found_claims (item_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_lost_found_claims_user_created
+ON lost_found_claims (claimant_user_id, created_at DESC);

@@ -755,6 +755,7 @@ try {
                     " . ($lostFoundImageColumn ? "lf.{$lostFoundImageColumn} AS image_path," : "NULL AS image_path,") . " u.name AS reported_by
                  FROM lost_found lf
                  JOIN users u ON u.id = lf.user_id
+                 WHERE LOWER(COALESCE(lf.status, 'open')) NOT IN ('matched', 'approved', 'resolved', 'distributed')
                  ORDER BY {$lostFoundDateSelect} DESC, lf.created_at DESC"
             );
             respond(true, 'Lost and found items loaded successfully.', ['items' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
@@ -896,6 +897,141 @@ try {
                 deleteStoredFile($existingImagePath);
             }
             respond(true, 'Item deleted successfully.');
+
+        case 'addLostFoundClaim':
+            $user = authenticateUser($input, $conn, $secretKey);
+            requireTable($conn, 'lost_found', 'Lost and found');
+            requireTable($conn, 'lost_found_claims', 'Lost and found claims');
+
+            $itemId = (int) ($input['item_id'] ?? 0);
+            $claimReason = trim($input['claim_reason'] ?? '');
+            $identifyingDetails = trim($input['identifying_details'] ?? '');
+            $contactInfo = trim($input['contact_info'] ?? '');
+
+            if ($itemId <= 0 || $claimReason === '' || $identifyingDetails === '' || $contactInfo === '') {
+                respond(false, 'Please complete the claim form details.', [], 422);
+            }
+
+            $itemStmt = $conn->prepare('SELECT id, user_id, item_name, status FROM lost_found WHERE id = ?');
+            $itemStmt->execute([$itemId]);
+            $item = $itemStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$item) {
+                respond(false, 'Item not found.', [], 404);
+            }
+
+            if ((int) $item['user_id'] === (int) $user['id']) {
+                respond(false, 'You cannot claim an item that you reported.', [], 422);
+            }
+
+            if (in_array(strtolower($item['status'] ?? ''), ['matched', 'approved', 'resolved', 'distributed'], true)) {
+                respond(false, 'This item is already resolved.', [], 422);
+            }
+
+            $duplicateStmt = $conn->prepare(
+                "SELECT id FROM lost_found_claims
+                 WHERE item_id = ? AND claimant_user_id = ? AND status IN ('pending', 'approved')
+                 LIMIT 1"
+            );
+            $duplicateStmt->execute([$itemId, $user['id']]);
+            if ($duplicateStmt->fetchColumn()) {
+                respond(false, 'You already have an active claim for this item.', [], 409);
+            }
+
+            $stmt = $conn->prepare(
+                'INSERT INTO lost_found_claims (item_id, claimant_user_id, claim_reason, identifying_details, contact_info, status)
+                 VALUES (?, ?, ?, ?, ?, ?)'
+            );
+            $stmt->execute([$itemId, $user['id'], $claimReason, $identifyingDetails, $contactInfo, 'pending']);
+            logActivity($conn, $user['id'], 'lost_found_claim_submitted', 'Submitted claim for item ID ' . $itemId);
+            respond(true, 'Claim submitted successfully. Admin will review it.');
+
+        case 'adminGetLostFoundClaims':
+            authenticateAdmin($input, $conn, $secretKey);
+            requireTable($conn, 'lost_found_claims', 'Lost and found claims');
+
+            $stmt = $conn->query(
+                'SELECT c.*, lf.item_name, lf.location, lf.report_type, lf.status AS item_status,
+                    u.name AS claimant_name, u.email AS claimant_email,
+                    reviewer.name AS reviewer_name
+                 FROM lost_found_claims c
+                 LEFT JOIN lost_found lf ON lf.id = c.item_id
+                 LEFT JOIN users u ON u.id = c.claimant_user_id
+                 LEFT JOIN users reviewer ON reviewer.id = c.reviewed_by
+                 ORDER BY
+                    CASE c.status
+                        WHEN \'pending\' THEN 1
+                        WHEN \'approved\' THEN 2
+                        WHEN \'distributed\' THEN 3
+                        WHEN \'rejected\' THEN 4
+                        ELSE 5
+                    END,
+                    c.created_at DESC'
+            );
+            respond(true, 'Claims loaded successfully.', ['claims' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+
+        case 'adminUpdateLostFoundClaim':
+            $admin = authenticateAdmin($input, $conn, $secretKey);
+            requireTable($conn, 'lost_found_claims', 'Lost and found claims');
+
+            $claimId = (int) ($input['id'] ?? 0);
+            $status = strtolower(trim($input['status'] ?? ''));
+            $adminNotes = trim($input['admin_notes'] ?? '');
+
+            if ($claimId <= 0 || !in_array($status, ['pending', 'approved', 'rejected', 'distributed'], true)) {
+                respond(false, 'Select a valid claim status.', [], 422);
+            }
+
+            $claimStmt = $conn->prepare('SELECT item_id FROM lost_found_claims WHERE id = ?');
+            $claimStmt->execute([$claimId]);
+            $itemId = (int) $claimStmt->fetchColumn();
+
+            if ($itemId <= 0) {
+                respond(false, 'Claim not found.', [], 404);
+            }
+
+            $stmt = $conn->prepare(
+                'UPDATE lost_found_claims
+                 SET status = ?, admin_notes = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
+                 WHERE id = ?'
+            );
+            $stmt->execute([$status, $adminNotes, $admin['id'], $claimId]);
+
+            if (in_array($status, ['approved', 'distributed'], true)) {
+                $itemUpdate = $conn->prepare('UPDATE lost_found SET status = ? WHERE id = ?');
+                $itemUpdate->execute(['resolved', $itemId]);
+
+                $rejectOthers = $conn->prepare(
+                    "UPDATE lost_found_claims
+                     SET status = 'rejected', admin_notes = COALESCE(NULLIF(admin_notes, ''), ?), reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
+                     WHERE item_id = ? AND id <> ? AND status IN ('pending', 'approved')"
+                );
+                $rejectOthers->execute([
+                    $status === 'distributed' ? 'Another claim was distributed.' : 'Another claim was approved.',
+                    $admin['id'],
+                    $itemId,
+                    $claimId
+                ]);
+            } elseif ($status === 'rejected') {
+                $activeClaimStmt = $conn->prepare(
+                    "SELECT COUNT(*)
+                     FROM lost_found_claims
+                     WHERE item_id = ? AND status IN ('approved', 'distributed')"
+                );
+                $activeClaimStmt->execute([$itemId]);
+
+                if ((int) $activeClaimStmt->fetchColumn() === 0) {
+                    $itemUpdate = $conn->prepare(
+                        "UPDATE lost_found
+                         SET status = 'open'
+                         WHERE id = ?"
+                    );
+                    $itemUpdate->execute([$itemId]);
+                }
+            }
+
+            logActivity($conn, $admin['id'], 'lost_found_claim_reviewed', 'Updated claim ID ' . $claimId . ' to ' . $status);
+            respond(true, 'Claim review updated successfully.');
 
         case 'adminGetDashboard':
             authenticateAdmin($input, $conn, $secretKey);

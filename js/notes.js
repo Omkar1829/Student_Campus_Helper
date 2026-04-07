@@ -6,6 +6,36 @@
 
 let notesState = [];
 
+const demoNotes = [
+    {
+        id: 'demo-notes-1',
+        title: 'Sample Data Structures Notes',
+        description: 'Preview content only. Sign in to view and download real campus notes uploaded by students.',
+        owner_name: 'Demo Student',
+        downloads: 18,
+        created_at: '2026-04-01',
+        can_delete: false
+    },
+    {
+        id: 'demo-notes-2',
+        title: 'Sample DBMS Revision Sheet',
+        description: 'This is dummy content for visitors. Real files and download counters are available after login.',
+        owner_name: 'Demo Library',
+        downloads: 11,
+        created_at: '2026-04-03',
+        can_delete: false
+    },
+    {
+        id: 'demo-notes-3',
+        title: 'Sample Web Development Checklist',
+        description: 'Sign in with your campus account to see actual notes shared by classmates.',
+        owner_name: 'Smart Campus',
+        downloads: 7,
+        created_at: '2026-04-05',
+        can_delete: false
+    }
+];
+
 function renderNotes(notes) {
     const grid = document.getElementById('notesGrid');
     const count = document.getElementById('notesCountLabel');
@@ -78,9 +108,9 @@ async function loadNotes() {
     const gate = document.getElementById('notesGate');
 
     if (!CampusApp.isAuthenticated()) {
-        notesState = [];
-        CampusApp.renderAuthPrompt(gate, 'Sign in to upload and download shared campus notes.');
-        renderNotes([]);
+        notesState = demoNotes;
+        CampusApp.renderAuthPrompt(gate, 'Sign in to view real notes, upload files, and download shared campus material.');
+        filterNotes();
         return;
     }
 
