@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Logs</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="adminGate" class="p-6"></div>
+    <div id="adminContent" class="hidden md:flex">
+        <aside class="min-h-screen w-64 border-r bg-white p-6">
+            <div class="mb-8 flex items-center justify-between"><h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2></div>
+            <nav class="space-y-3 text-sm text-slate-600">
+                <a href="admin-dashboard.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Dashboard</a>
+                <a href="admin-users.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Students</a>
+                <a href="admin-notes.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Notes</a>
+                <a href="admin-events.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Events</a>
+                <a href="admin-timetable.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Timetable</a>
+                <a href="admin-lostfound.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Lost & Found</a>
+                <a href="admin-logs.html" class="block rounded-lg bg-indigo-100 px-4 py-2 font-medium text-indigo-600">Logs</a>
+            </nav>
+        </aside>
+        <main class="flex-1">
+            <header class="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
+                <h1 class="text-lg font-semibold">System Logs</h1>
+                <button data-logout class="rounded-xl border border-slate-300 px-4 py-2">Logout</button>
+            </header>
+            <div class="grid gap-6 p-6 xl:grid-cols-2">
+                <section class="overflow-hidden rounded-2xl bg-white shadow-sm">
+                    <div class="border-b p-4"><h2 class="font-semibold">Login Logs</h2></div>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-600">
+                            <tr><th class="p-4">User</th><th>Email</th><th>IP</th><th>Time</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="adminLoginLogs"></tbody>
+                    </table>
+                </section>
+                <section class="overflow-hidden rounded-2xl bg-white shadow-sm">
+                    <div class="border-b p-4"><h2 class="font-semibold">Activity Logs</h2></div>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-600">
+                            <tr><th class="p-4">User</th><th>Action</th><th>Details</th><th>Time</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="adminActivityLogs"></tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-logs.js"></script>
+</body>
+</html>
+
+
+

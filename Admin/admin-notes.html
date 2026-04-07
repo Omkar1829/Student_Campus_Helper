@@ -1,189 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Notes</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
 </head>
-
-<body class="bg-gray-50 text-gray-800 flex">
-
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-white border-r min-h-screen p-6">
-        <h2 class="text-xl font-bold text-indigo-600 mb-8">📘 Admin Panel</h2>
-
-        <nav class="space-y-3 text-gray-600">
-            <a href="admin-dashboard.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Dashboard</a>
-            <a href="admin-users.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Students</a>
-            <a href="#" class="block bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg">Notes</a>
-            <a href="admin-events.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Events</a>
-            <a href="admin-timetable.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Timetable</a>
-            <a href="admin-lostfound.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Lost & Found</a>
-        </nav>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="flex-1">
-
-        <!-- TOPBAR -->
-        <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-            <h1 class="text-lg font-semibold">Notes Management</h1>
-
-            <button onclick="openModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                + Add Note
-            </button>
-        </header>
-
-        <!-- CONTENT -->
-        <div class="p-6">
-
-            <!-- SEARCH -->
-            <div class="mb-6">
-                <input id="search" type="text" placeholder="Search notes..." class="w-full border px-4 py-2 rounded-lg">
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="adminGate" class="p-6"></div>
+    <div id="adminContent" class="hidden md:flex">
+        <aside class="min-h-screen w-64 border-r bg-white p-6">
+            <div class="mb-8 flex items-center justify-between"><h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2></div>
+            <nav class="space-y-3 text-sm text-slate-600">
+                <a href="admin-dashboard.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Dashboard</a>
+                <a href="admin-users.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Students</a>
+                <a href="admin-notes.html" class="block rounded-lg bg-indigo-100 px-4 py-2 font-medium text-indigo-600">Notes</a>
+                <a href="admin-events.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Events</a>
+                <a href="admin-timetable.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Timetable</a>
+                <a href="admin-lostfound.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Lost & Found</a>
+                <a href="admin-logs.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Logs</a>
+            </nav>
+        </aside>
+        <main class="flex-1">
+            <header class="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
+                <h1 class="text-lg font-semibold">Notes Management</h1>
+                <div class="flex items-center gap-3">
+                    <button id="openAdminNoteModal" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white">+ Add Note</button>
+                    <button data-logout class="rounded-xl border border-slate-300 px-4 py-2">Logout</button>
+                </div>
+            </header>
+            <div class="space-y-6 p-6">
+                <input id="adminNotesSearch" type="text" placeholder="Search notes..." class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                <div id="adminNotesGrid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
             </div>
+        </main>
+    </div>
 
-            <!-- NOTES GRID -->
-            <div id="notesGrid" class="grid md:grid-cols-3 gap-6"></div>
-
-        </div>
-
-    </main>
-
-    <!-- MODAL -->
-    <div id="modal" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center">
-
-        <div class="bg-white p-6 rounded-xl w-96">
-
-            <h2 class="text-lg font-bold mb-4">Add Note</h2>
-
-            <input id="title" placeholder="Title" class="w-full border p-2 mb-2 rounded">
-            <input id="subject" placeholder="Subject" class="w-full border p-2 mb-2 rounded">
-            <input id="uploadedBy" placeholder="Uploaded By" class="w-full border p-2 mb-2 rounded">
-            <input id="size" placeholder="File Size (e.g. 2MB)" class="w-full border p-2 mb-2 rounded">
-
-            <div class="flex justify-end gap-2 mt-4">
-                <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
-                <button onclick="saveNote()" class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+    <div id="adminNoteModal" class="fixed inset-0 hidden bg-black/50 px-4 py-8" data-edit-id="">
+        <div class="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 id="adminNoteModalTitle" class="text-lg font-bold">Add Note</h2>
+                <button id="closeAdminNoteModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
+            <form id="adminNoteForm" class="space-y-4">
+                <input id="adminNoteTitle" type="text" placeholder="Title" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                <textarea id="adminNoteDescription" rows="4" placeholder="Description" class="w-full rounded-xl border border-slate-300 px-4 py-3" required></textarea>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <input id="adminNoteFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                    <input id="adminNoteDownloads" type="number" min="0" value="0" placeholder="Downloads" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                </div>
+                <input id="adminNotePath" type="text" placeholder="Optional external file path" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                <button id="saveAdminNoteBtn" type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Create Note</button>
+            </form>
         </div>
     </div>
 
-    <script>
-
-        let notes = [
-            { id: 1, title: "React Hooks", subject: "Web Dev", uploadedBy: "Omkar", size: "2MB", date: "Mar 15" },
-            { id: 2, title: "BST Notes", subject: "DSA", uploadedBy: "Rahul", size: "1.5MB", date: "Mar 10" },
-            { id: 3, title: "SQL Optimization", subject: "DBMS", uploadedBy: "Amit", size: "3MB", date: "Mar 5" }
-        ];
-
-        let editId = null;
-
-        function renderNotes() {
-            const grid = document.getElementById("notesGrid");
-            grid.innerHTML = "";
-
-            notes.forEach(n => {
-
-                grid.innerHTML += `
-<div class="bg-blue-100 p-5 rounded-xl border border-blue-200">
-
-    <div class="flex justify-between">
-        <div class="flex gap-3">
-            <div class="bg-indigo-200 p-2 rounded-lg">
-                <i class="fa-solid fa-file text-indigo-600"></i>
-            </div>
-            <div>
-                <h3 class="font-semibold">${n.title}</h3>
-                <p class="text-sm text-gray-500">${n.subject}</p>
-            </div>
-        </div>
-
-        <div class="flex gap-2">
-            <button onclick="editNote(${n.id})" class="text-indigo-600">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button onclick="deleteNote(${n.id})" class="text-red-500">
-                <i class="fa fa-trash"></i>
-            </button>
-        </div>
-    </div>
-
-    <hr class="my-4">
-
-    <div class="text-sm text-gray-600 flex justify-between">
-        <span>${n.size} • ${n.uploadedBy}</span>
-        <span>${n.date}</span>
-    </div>
-
-</div>
-`;
-            });
-        }
-
-        renderNotes();
-
-        function openModal() {
-            document.getElementById("modal").classList.remove("hidden");
-        }
-
-        function closeModal() {
-            document.getElementById("modal").classList.add("hidden");
-            clearForm();
-        }
-
-        function clearForm() {
-            document.getElementById("title").value = "";
-            document.getElementById("subject").value = "";
-            document.getElementById("uploadedBy").value = "";
-            document.getElementById("size").value = "";
-            editId = null;
-        }
-
-        function saveNote() {
-
-            const title = document.getElementById("title").value;
-            const subject = document.getElementById("subject").value;
-            const uploadedBy = document.getElementById("uploadedBy").value;
-            const size = document.getElementById("size").value;
-
-            if (editId) {
-                notes = notes.map(n => n.id == editId ? { ...n, title, subject, uploadedBy, size } : n);
-            } else {
-                notes.push({
-                    id: Date.now(),
-                    title, subject, uploadedBy, size,
-                    date: new Date().toLocaleDateString()
-                });
-            }
-
-            closeModal();
-            renderNotes();
-        }
-
-        function deleteNote(id) {
-            notes = notes.filter(n => n.id !== id);
-            renderNotes();
-        }
-
-        function editNote(id) {
-            const n = notes.find(n => n.id === id);
-
-            document.getElementById("title").value = n.title;
-            document.getElementById("subject").value = n.subject;
-            document.getElementById("uploadedBy").value = n.uploadedBy;
-            document.getElementById("size").value = n.size;
-
-            editId = id;
-            openModal();
-        }
-
-    </script>
-
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-notes.js"></script>
 </body>
-
 </html>
+
+
+

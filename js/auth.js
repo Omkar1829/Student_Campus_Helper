@@ -1,167 +1,126 @@
-// Authentication API endpoint
-const API_URL = './php/auth.php';
-
-// Switch between login and register tabs
-function switchTab(tab) {
+﻿function switchTab(tab) {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
 
-    if (tab === 'login') {
-        loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-        loginTab.classList.add('border-b-2', 'border-indigo-600', 'text-indigo-600');
-        loginTab.classList.remove('border-transparent', 'text-gray-500');
-        registerTab.classList.remove('border-b-2', 'border-indigo-600', 'text-indigo-600');
-        registerTab.classList.add('border-transparent', 'text-gray-500');
-        clearErrors();
-    } else {
-        registerForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        registerTab.classList.add('border-b-2', 'border-indigo-600', 'text-indigo-600');
-        registerTab.classList.remove('border-transparent', 'text-gray-500');
-        loginTab.classList.remove('border-b-2', 'border-indigo-600', 'text-indigo-600');
-        loginTab.classList.add('border-transparent', 'text-gray-500');
-        clearErrors();
+    const showLogin = tab === 'login';
+    loginForm.classList.toggle('hidden', !showLogin);
+    registerForm.classList.toggle('hidden', showLogin);
+    loginTab.classList.toggle('border-indigo-600', showLogin);
+    loginTab.classList.toggle('text-indigo-600', showLogin);
+    loginTab.classList.toggle('text-gray-500', !showLogin);
+    registerTab.classList.toggle('border-indigo-600', !showLogin);
+    registerTab.classList.toggle('text-indigo-600', !showLogin);
+    registerTab.classList.toggle('text-gray-500', showLogin);
+
+    clearMessages();
+}
+
+function clearMessages() {
+    document.querySelectorAll('.error-message, .success-message').forEach((element) => {
+        element.textContent = '';
+    });
+}
+
+function showMessage(targetId, message, type = 'error') {
+    const element = document.getElementById(targetId);
+    if (!element) {
+        return;
+    }
+
+    element.textContent = message;
+    element.classList.toggle('text-red-600', type === 'error');
+    element.classList.toggle('text-emerald-600', type === 'success');
+}
+
+async function getClientIp() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip || 'Unknown';
+    } catch (error) {
+        return 'Unknown';
     }
 }
 
-function clearErrors() {
-    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-    document.querySelectorAll('.success-message').forEach(el => el.textContent = '');
-}
+async function handleLogin() {
+    clearMessages();
 
-function showError(elementId, message) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = message;
-    }
-}
-
-function showSuccess(elementId, message) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = message;
-    }
-}
-
-function setButtonState(buttonId, isLoading) {
-    const button = document.getElementById(buttonId);
-    if (button) {
-        button.disabled = isLoading;
-        if (isLoading) {
-            button.innerHTML = '<i class="fa-solid fa-spinner loading"></i> Processing...';
-        } else if (buttonId === 'loginBtn') {
-            button.innerHTML = '<i class="fa-solid fa-sign-in-alt"></i> Login';
-        } else {
-            button.innerHTML = '<i class="fa-solid fa-user-plus"></i> Register';
-        }
-    }
-}
-
-
-document.getElementById('loginBtn').addEventListener('click', async () => {
-
+    const button = document.getElementById('loginBtn');
     const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const ip_address = await fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => data.ip).catch(() => 'Unknown');
+    const password = document.getElementById('loginPassword').value.trim();
 
     if (!email || !password) {
-        alert("All fields required");
+        showMessage('loginError', 'Email and password are required.');
         return;
     }
 
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'login',
-                email,
-                password,
-                ip_address
-            })
+        CampusApp.setButtonLoading(button, true, '<i class="fa-solid fa-sign-in-alt"></i> Login');
+        const ipAddress = await getClientIp();
+        const data = await CampusApp.api('login', {
+            email,
+            password,
+            ip_address: ipAddress
+        }, {
+            logoutOnUnauthorized: false
         });
 
-        const data = await res.json();
-        console.log("LOGIN RESPONSE:", data);
-
-        if (data.success) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', data.token);
-
-            alert("Login successful");
-
-            window.location.href = './index.html';
-
-        } else {
-            alert(data.message);
-        }
-
-    } catch (err) {
-        console.error(err);
-        alert("Error occurred");
+        CampusApp.saveSession(data.token, data.user);
+        localStorage.setItem('isLoggedIn', 'true');
+        CampusApp.updateNavbarState();
+        CampusApp.showToast('Login successful.', 'success');
+        window.location.href = CampusApp.isAdmin() ? './Admin/admin-dashboard.html' : './profile.html';
+    } catch (error) {
+        showMessage('loginError', error.message);
+    } finally {
+        CampusApp.setButtonLoading(button, false, '<i class="fa-solid fa-sign-in-alt"></i> Login');
     }
-});
+}
 
+async function handleRegister() {
+    clearMessages();
 
-document.getElementById('registerBtn').addEventListener('click', async () => {
+    const button = document.getElementById('registerBtn');
+    const payload = {
+        name: document.getElementById('registerName').value.trim(),
+        email: document.getElementById('registerEmail').value.trim(),
+        course: document.getElementById('registerBranch').value.trim(),
+        semester: document.getElementById('registerSemester').value.trim(),
+        password: document.getElementById('registerPassword').value,
+        confirm_password: document.getElementById('registerConfirm').value
+    };
 
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const branch = document.getElementById('registerBranch').value.trim();
-    const semester = document.getElementById('registerSemester').value;
-    const password = document.getElementById('registerPassword').value;
-    const confirm_password = document.getElementById('registerConfirm').value;
-
-    if (!name || !email || !branch || !semester || !password || !confirm_password) {
-        alert("All fields required");
+    if (!payload.name || !payload.email || !payload.course || !payload.semester || !payload.password || !payload.confirm_password) {
+        showMessage('registerError', 'Please fill in all registration fields.');
         return;
     }
 
-    if (password !== confirm_password) {
-        alert("Passwords do not match");
+    if (payload.password !== payload.confirm_password) {
+        showMessage('registerError', 'Passwords do not match.');
         return;
     }
 
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'register',
-                name,
-                email,
-                course: branch,
-                semester,
-                password,
-                confirm_password
-            })
+        CampusApp.setButtonLoading(button, true, '<i class="fa-solid fa-user-plus"></i> Register');
+        const response = await CampusApp.api('register', payload, {
+            logoutOnUnauthorized: false
         });
 
-        const data = await res.json();
-        console.log("REGISTER RESPONSE:", data);
-
-        if (data.success) {
-            alert("Registered successfully");
-
-            document.getElementById('loginEmail').value = email;
-            switchTab('login');
-
-        } else {
-            alert(data.message);
-        }
-
-    } catch (err) {
-        console.error(err);
-        alert("Error occurred");
+        showMessage('registerSuccess', response.message, 'success');
+        document.getElementById('loginEmail').value = payload.email;
+        document.getElementById('registerForm').reset?.();
+        switchTab('login');
+    } catch (error) {
+        showMessage('registerError', error.message);
+    } finally {
+        CampusApp.setButtonLoading(button, false, '<i class="fa-solid fa-user-plus"></i> Register');
     }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
+    document.getElementById('registerBtn')?.addEventListener('click', handleRegister);
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn === 'true') {
-        window.location.href = './profile.html';
-    }
-});

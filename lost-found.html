@@ -1,239 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Lost & Found</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
 </head>
-
-<body class="bg-gray-50 text-gray-800">
-
-    <!-- NAVBAR -->
-    <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-
-            <div class="text-xl font-bold text-indigo-600">
-                <i class="fa-solid fa-book-open"></i> Smart Campus
-            </div>
-
-            <nav class="hidden md:flex gap-6 font-medium">
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div class="text-xl font-bold text-indigo-600"><i class="fa-solid fa-book-open"></i> Smart Campus</div>
+            <nav class="hidden gap-6 font-medium md:flex">
                 <a href="index.html">Dashboard</a>
                 <a href="notes.html">Notes</a>
                 <a href="timetable.html">Timetable</a>
                 <a href="events.html">Events</a>
                 <a href="#" class="text-indigo-600 font-semibold">Lost & Found</a>
             </nav>
-
-            <div class="flex gap-3">
-                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                    <a href="./profile.html">Profile</a>
-                </button>
+            <div class="flex items-center gap-3">
+                <span data-user-only class="hidden text-sm font-medium text-slate-500">Hi, <span data-user-name>Student</span></span>
+                <a data-auth-link href="./login-register.html" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700">Sign In</a>
+                <button data-user-only data-logout class="hidden rounded-xl bg-red-100 px-4 py-2 font-semibold text-red-600 transition hover:bg-red-200">Logout</button>
             </div>
         </div>
     </header>
 
-    <!-- HEADER -->
-    <section class="bg-indigo-100 px-8 py-10 flex justify-between items-center">
-        <div>
-            <h2 class="text-3xl font-bold">♡ Lost & Found</h2>
-            <p class="text-gray-600">4 lost • 4 found items</p>
+    <section class="bg-indigo-100 px-8 py-10">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold">Lost & Found</h2>
+                <p class="text-gray-600">Community help for missing and recovered items</p>
+            </div>
+            <button id="openLostFoundModal" data-auth-required class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700">+ Report Item</button>
         </div>
-
-        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg">
-            + Report Item
-        </button>
     </section>
 
-    <!-- STATS -->
-    <section class="max-w-6xl mx-auto grid md:grid-cols-4 gap-4 px-6 mt-6">
-
-        <div class="bg-blue-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-indigo-600">8</h3>
+    <section class="mx-auto mt-6 grid max-w-6xl gap-4 px-6 md:grid-cols-4">
+        <div class="rounded-2xl bg-blue-100 p-5 text-center">
+            <h3 id="lfTotalCount" class="text-2xl font-bold text-indigo-600">0</h3>
             <p class="text-sm text-gray-600">Total Items</p>
         </div>
-
-        <div class="bg-red-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-red-500">4</h3>
+        <div class="rounded-2xl bg-red-100 p-5 text-center">
+            <h3 id="lfLostCount" class="text-2xl font-bold text-red-500">0</h3>
             <p class="text-sm text-gray-600">Lost</p>
         </div>
-
-        <div class="bg-green-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-green-600">4</h3>
+        <div class="rounded-2xl bg-green-100 p-5 text-center">
+            <h3 id="lfFoundCount" class="text-2xl font-bold text-green-600">0</h3>
             <p class="text-sm text-gray-600">Found</p>
         </div>
-
-        <div class="bg-purple-100 p-5 rounded-xl text-center">
-            <h3 class="text-2xl font-bold text-purple-600">50%</h3>
+        <div class="rounded-2xl bg-purple-100 p-5 text-center">
+            <h3 id="lfRecoveryRate" class="text-2xl font-bold text-purple-600">0%</h3>
             <p class="text-sm text-gray-600">Recovery Rate</p>
         </div>
-
     </section>
 
-    <!-- SEARCH + FILTER -->
-    <div class="max-w-6xl mx-auto mt-6 flex gap-3 px-6 flex-wrap">
-
-        <input type="text" placeholder="Search items..." class="flex-1 border px-4 py-2 rounded-lg">
-
-        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">All Items</button>
-        <button class="border px-4 py-2 rounded-lg">Lost</button>
-        <button class="border px-4 py-2 rounded-lg">Found</button>
-        <button class="border px-4 py-2 rounded-lg">Latest First</button>
-
+    <div class="mx-auto mt-6 flex max-w-6xl flex-wrap gap-3 px-6">
+        <input id="lostFoundSearch" type="text" placeholder="Search items..." class="flex-1 rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
+        <button data-lf-filter="all" class="rounded-xl bg-indigo-600 px-4 py-2 text-white">All Items</button>
+        <button data-lf-filter="lost" class="rounded-xl border border-slate-300 px-4 py-2">Lost</button>
+        <button data-lf-filter="found" class="rounded-xl border border-slate-300 px-4 py-2">Found</button>
     </div>
 
-    <!-- ITEMS GRID -->
-    <section class="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-6">
-
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
-
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Student ID Card</h3>
-                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
-                </div>
-
-                <p class="text-sm text-gray-500 mt-1">ID card for John Smith</p>
-
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Administration Building</p>
-                    <p>📅 March 21, 2024</p>
-                    <p>📞 +1-555-0107</p>
-                </div>
-
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Claim Item
-                </button>
-            </div>
+    <section id="lostFoundGrid" class="mx-auto grid max-w-6xl gap-6 p-6 md:grid-cols-3">
+        <div class="col-span-full rounded-2xl border bg-white p-8 text-center shadow-sm">
+            <p class="text-sm text-slate-500">Loading items...</p>
         </div>
-
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
-
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Black Backpack</h3>
-                    <span class="bg-red-200 text-red-700 px-2 py-1 text-xs rounded-full">Lost</span>
-                </div>
-
-                <p class="text-sm text-gray-500 mt-1">North Face black backpack</p>
-
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Library</p>
-                    <p>📅 March 20, 2024</p>
-                    <p>📞 +1-555-0101</p>
-                </div>
-
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Report Info
-                </button>
-            </div>
-        </div>
-
-        <!-- ITEM -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-
-            <div class="bg-indigo-100 h-32 flex items-center justify-center text-3xl text-indigo-400">
-                ♡
-            </div>
-
-            <div class="p-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Navy Blue Jacket</h3>
-                    <span class="bg-green-200 text-green-700 px-2 py-1 text-xs rounded-full">Found</span>
-                </div>
-
-                <p class="text-sm text-gray-500 mt-1">Winter jacket size M</p>
-
-                <div class="text-sm mt-3 space-y-1 text-gray-600">
-                    <p>📍 Student Center</p>
-                    <p>📅 March 19, 2024</p>
-                    <p>📞 +1-555-0104</p>
-                </div>
-
-                <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    Claim Item
-                </button>
-            </div>
-        </div>
-
     </section>
 
-    <!-- TIPS -->
-    <section class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 px-6 mb-10">
-
-        <div class="bg-blue-100 p-6 rounded-xl">
-            <h3 class="font-semibold mb-3">Tips for Finding Lost Items</h3>
-            <ul class="text-sm space-y-2">
-                <li>1. Check help desk first</li>
-                <li>2. Describe item clearly</li>
-                <li>3. Keep contact updated</li>
-                <li>4. Check regularly</li>
+    <section class="mx-auto mb-10 grid max-w-6xl gap-6 px-6 md:grid-cols-2">
+        <div class="rounded-2xl bg-blue-100 p-6">
+            <h3 class="mb-3 font-semibold">Tips for Finding Lost Items</h3>
+            <ul class="space-y-2 text-sm">
+                <li>1. Check the help desk or administration office first.</li>
+                <li>2. Describe the item with clear, unique details.</li>
+                <li>3. Keep your contact information updated.</li>
+                <li>4. Check the board regularly for matching reports.</li>
             </ul>
         </div>
-
-        <div class="bg-green-100 p-6 rounded-xl">
-            <h3 class="font-semibold mb-3">Found an Item?</h3>
-            <ul class="text-sm space-y-2">
-                <li>• Click "Report Item"</li>
-                <li>• Add details & location</li>
-                <li>• Add contact info</li>
+        <div class="rounded-2xl bg-green-100 p-6">
+            <h3 class="mb-3 font-semibold">Found an Item?</h3>
+            <ul class="space-y-2 text-sm">
+                <li>Click "Report Item" to add a found report.</li>
+                <li>Share the location and a short description.</li>
+                <li>Use the detail modal to update or resolve your report later.</li>
             </ul>
         </div>
-
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-white py-12 px-6 border-t">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+    <div id="reportItemModal" class="fixed inset-0 z-[90] hidden bg-black/50 px-4 py-8">
+        <div class="mx-auto max-w-2xl rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="mb-6 flex items-center justify-between">
+                <h3 class="text-2xl font-bold">Report Lost or Found Item</h3>
+                <button id="closeLostFoundModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="lostFoundForm" class="space-y-4">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <select id="reportType" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                        <option value="lost">Lost</option>
+                        <option value="found">Found</option>
+                    </select>
+                    <select id="itemStatus" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
+                        <option value="open">Open</option>
+                        <option value="matched">Matched</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+                <input id="itemName" type="text" placeholder="Item name" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                <textarea id="itemDescription" rows="4" placeholder="Describe the item" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required></textarea>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <input id="itemLocation" type="text" placeholder="Location" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                    <input id="contactInfo" type="text" placeholder="Contact info" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                </div>
+                <input id="reportedDate" type="date" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
+                <div class="space-y-2">
+                    <label for="itemImage" class="text-sm font-medium text-slate-700">Upload item image</label>
+                    <input id="itemImage" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
+                    <p class="text-xs text-slate-500">Allowed: JPG, JPEG, PNG, GIF, WEBP. The image path will be stored automatically.</p>
+                </div>
+                <button id="saveLostFoundBtn" type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700"><i class="fa-solid fa-paper-plane"></i> Submit Report</button>
+            </form>
+        </div>
+    </div>
 
+    <div id="itemDetailsModal" class="fixed inset-0 z-[95] hidden bg-black/50 px-4 py-8">
+        <div class="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="mb-6 flex items-center justify-between">
+                <h3 id="detailTitle" class="text-2xl font-bold">Item Details</h3>
+                <button id="closeItemDetailsModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-sm text-slate-600">
+                <img id="detailImage" src="" alt="Item preview" class="hidden h-48 w-full rounded-2xl object-cover">
+                <p><strong>Type:</strong> <span id="detailType"></span></p>
+                <p><strong>Description:</strong> <span id="detailDescription"></span></p>
+                <p><strong>Location:</strong> <span id="detailLocation"></span></p>
+                <p><strong>Contact:</strong> <span id="detailContact"></span></p>
+                <p><strong>Reported Date:</strong> <span id="detailDate"></span></p>
+                <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+                <p><strong>Reported By:</strong> <span id="detailReporter"></span></p>
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button id="editLostFoundBtn" class="hidden flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700">Edit Report</button>
+                <button id="deleteLostFoundBtn" class="hidden flex-1 rounded-xl bg-red-600 px-4 py-3 font-semibold text-white transition hover:bg-red-700">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t bg-white px-6 py-12">
+        <div class="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
             <div>
-                <h3 class="font-bold text-lg text-indigo-600">Smart Campus</h3>
-                <p class="text-sm text-gray-600 mt-2">
-                    Your personal campus management assistant
-                </p>
+                <h3 class="text-lg font-bold text-indigo-600">Smart Campus</h3>
+                <p class="mt-2 text-sm text-gray-600">Your personal campus management assistant</p>
             </div>
-
             <div>
                 <h4 class="font-semibold mb-2">Quick Links</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
+                <ul class="space-y-1 text-sm text-gray-600">
                     <li>Dashboard</li>
                     <li>Notes</li>
                     <li>Timetable</li>
                     <li>Events</li>
                 </ul>
             </div>
-
             <div>
                 <h4 class="font-semibold mb-2">More</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
+                <ul class="space-y-1 text-sm text-gray-600">
                     <li>Lost & Found</li>
                     <li>Profile</li>
                     <li>Login</li>
                 </ul>
             </div>
-
         </div>
-
-        <p class="text-center text-sm text-gray-500 mt-8">
-            © 2024 Smart Campus Helper
-        </p>
+        <p class="mt-8 text-center text-sm text-gray-500">© 2026 Smart Campus Helper</p>
     </footer>
 
+    <script src="./js/main.js"></script>
+    <script src="./js/lost-found.js"></script>
 </body>
-
 </html>
+
+
+
+
+

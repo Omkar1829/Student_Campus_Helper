@@ -1,235 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Events</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
     <style>
-        .notice-board {
-            background: #7c2d12;
-            padding: 16px;
-            border-radius: 14px;
-        }
-
-        .board-inner {
-            background: #991b1b;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .note {
-            background: #fffdf7;
-            padding: 14px;
-            border-radius: 8px;
-            position: relative;
-            transform: rotate(-2deg);
-        }
-
-        .note:nth-child(even) {
-            transform: rotate(2deg);
-        }
-
-        .pin {
-            width: 10px;
-            height: 10px;
-            background: red;
-            border-radius: 50%;
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        .notice-board { background: #7c2d12; padding: 16px; border-radius: 14px; }
+        .board-inner { background: #991b1b; padding: 20px; border-radius: 10px; }
+        .note { background: #fffdf7; padding: 14px; border-radius: 8px; position: relative; transform: rotate(-2deg); }
+        .note:nth-child(even) { transform: rotate(2deg); }
+        .pin { width: 10px; height: 10px; background: red; border-radius: 50%; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); }
     </style>
-
 </head>
-
-<body class="bg-gray-50 text-gray-800">
-
-    <!-- NAVBAR (UNCHANGED) -->
-    <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-
-            <div class="text-xl font-bold text-indigo-600">
-                <i class="fa-solid fa-book-open"></i> Smart Campus
-            </div>
-
-            <nav class="hidden md:flex gap-6 font-medium">
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div class="text-xl font-bold text-indigo-600"><i class="fa-solid fa-book-open"></i> Smart Campus</div>
+            <nav class="hidden gap-6 font-medium md:flex">
                 <a href="index.html">Dashboard</a>
                 <a href="notes.html">Notes</a>
                 <a href="timetable.html">Timetable</a>
                 <a href="#" class="text-indigo-600">Events</a>
                 <a href="lost-found.html">Lost & Found</a>
             </nav>
-
-            <div class="flex gap-3">
-                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                    <a href="./profile.html">Profile</a>
-                </button>
+            <div class="flex items-center gap-3">
+                <span data-user-only class="hidden text-sm font-medium text-slate-500">Hi, <span data-user-name>Student</span></span>
+                <a data-auth-link href="./login-register.html" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700">Sign In</a>
+                <button data-user-only data-logout class="hidden rounded-xl bg-red-100 px-4 py-2 font-semibold text-red-600 transition hover:bg-red-200">Logout</button>
             </div>
         </div>
     </header>
 
-    <!-- HEADER -->
-    <section class="bg-indigo-100 px-8 py-10 flex justify-between items-center">
-        <div>
-            <h2 class="text-3xl font-bold">📅 Campus Events</h2>
-            <p class="text-gray-600">8 events total • 4 important</p>
-        </div>
-
-        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg">
-            + Add Event
-        </button>
-    </section>
-
-    <!-- 🔴 NOTICE BOARD (AUTO HEIGHT) -->
-    <section class="max-w-7xl mx-auto px-6 mt-8">
-
-        <h3 class="font-bold mb-4">📌 Announcements</h3>
-
-        <div class="notice-board">
-            <div class="board-inner grid md:grid-cols-3 gap-6">
-
-                <div class="note">
-                    <div class="pin"></div>
-                    <h3 class="font-semibold">Midterm Notice</h3>
-                    <p class="text-sm mt-1">Exams begin April 22</p>
-                    <p class="text-xs mt-2 text-gray-600">Valid till: April 30</p>
-                </div>
-
-                <div class="note">
-                    <div class="pin"></div>
-                    <h3 class="font-semibold">Holiday Notice</h3>
-                    <p class="text-sm mt-1">Labour Day Holiday</p>
-                    <p class="text-xs mt-2 text-gray-600">Valid till: May 1</p>
-                </div>
-
+    <section class="bg-indigo-100 px-8 py-10">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold">Campus Events</h2>
+                <p class="text-gray-600"><span id="eventsTotalLabel">0 events total</span> • <span id="eventsImportantLabel">0 important</span></p>
             </div>
+            <a href="profile.html" class="rounded-xl border border-slate-300 px-5 py-3 font-semibold">Profile</a>
         </div>
-
     </section>
 
-    <!-- SEARCH -->
-    <div class="max-w-7xl mx-auto mt-6 px-6 flex gap-3">
-        <input type="text" placeholder="Search events..." class="flex-1 border px-4 py-2 rounded-lg">
-        <button class="border px-4 py-2 rounded-lg">All Categories</button>
-        <button class="border px-4 py-2 rounded-lg">Important Only</button>
+    <section class="mx-auto mt-8 max-w-7xl px-6">
+        <h3 class="mb-4 font-bold">Announcements</h3>
+        <div class="notice-board">
+            <div id="announcementsGrid" class="board-inner grid gap-6 md:grid-cols-3"></div>
+        </div>
+    </section>
+
+    <div class="mx-auto mt-6 flex max-w-7xl gap-3 px-6 flex-wrap">
+        <input id="eventsSearch" type="text" placeholder="Search events..." class="flex-1 rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
+        <button class="rounded-xl border border-slate-300 px-4 py-3">All Categories</button>
+        <button id="importantOnlyBtn" data-active="false" class="rounded-xl border border-slate-300 px-4 py-3 transition">Important Only</button>
     </div>
 
-    <!-- IMPORTANT EVENTS -->
-    <section class="max-w-7xl mx-auto px-6 mt-10">
-
-        <h3 class="font-bold text-lg mb-4">🔴 Important Events</h3>
-
-        <div class="grid md:grid-cols-3 gap-6">
-
-            <!-- 4 CARDS -->
-            <div class="border p-5 rounded-xl bg-indigo-50">
-                <h3 class="font-semibold">Annual Tech Symposium •</h3>
-                <p class="text-sm text-gray-600">Talks on AI & Web</p>
-                <p class="mt-2 text-sm">📅 April 15</p>
-            </div>
-
-            <div class="border p-5 rounded-xl bg-indigo-50">
-                <h3 class="font-semibold">Placement Drive •</h3>
-                <p class="text-sm text-gray-600">Recruitment event</p>
-                <p class="mt-2 text-sm">📅 April 20</p>
-            </div>
-
-            <div class="border p-5 rounded-xl bg-indigo-50">
-                <h3 class="font-semibold">Midterm Exams Begin •</h3>
-                <p class="text-sm text-gray-600">Exam period starts</p>
-                <p class="mt-2 text-sm">📅 April 22</p>
-            </div>
-
-            <div class="border p-5 rounded-xl bg-indigo-50">
-                <h3 class="font-semibold">Campus Fest 2024 •</h3>
-                <p class="text-sm text-gray-600">Cultural fest</p>
-                <p class="mt-2 text-sm">📅 May 1</p>
-            </div>
-
-        </div>
-
+    <section class="mx-auto mt-10 max-w-7xl px-6">
+        <h3 class="mb-4 text-lg font-bold">Important Events</h3>
+        <div id="importantEventsGrid" class="grid gap-6 md:grid-cols-3"></div>
     </section>
 
-    <!-- OTHER EVENTS -->
-    <section class="max-w-7xl mx-auto px-6 mt-10 mb-10">
-
-        <h3 class="font-bold text-lg mb-4">Other Events</h3>
-
-        <div class="grid md:grid-cols-3 gap-6">
-
-            <!-- 5 CARDS -->
-            <div class="border p-5 rounded-xl">
-                <h3 class="font-semibold">Coding Workshop</h3>
-                <p class="text-sm text-gray-600">April 10</p>
-            </div>
-
-            <div class="border p-5 rounded-xl">
-                <h3 class="font-semibold">Web Dev Workshop</h3>
-                <p class="text-sm text-gray-600">April 12</p>
-            </div>
-
-            <div class="border p-5 rounded-xl">
-                <h3 class="font-semibold">Networking Event</h3>
-                <p class="text-sm text-gray-600">April 18</p>
-            </div>
-
-            <div class="border p-5 rounded-xl">
-                <h3 class="font-semibold">AI Seminar</h3>
-                <p class="text-sm text-gray-600">April 25</p>
-            </div>
-
-            <div class="border p-5 rounded-xl">
-                <h3 class="font-semibold">Design Meetup</h3>
-                <p class="text-sm text-gray-600">April 28</p>
-            </div>
-
-        </div>
-
+    <section class="mx-auto mb-10 mt-10 max-w-7xl px-6">
+        <h3 class="mb-4 text-lg font-bold">Other Events</h3>
+        <div id="otherEventsGrid" class="grid gap-6 md:grid-cols-3"></div>
     </section>
 
-    <!-- FOOTER (UNCHANGED) -->
-    <footer class="bg-white py-12 px-6 border-t">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
-
+    <footer class="border-t bg-white px-6 py-12">
+        <div class="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
             <div>
-                <h3 class="font-bold text-lg text-indigo-600">Smart Campus</h3>
-                <p class="text-sm text-gray-600 mt-2">
-                    Your personal campus management assistant
-                </p>
+                <h3 class="text-lg font-bold text-indigo-600">Smart Campus</h3>
+                <p class="mt-2 text-sm text-gray-600">Your personal campus management assistant</p>
             </div>
-
             <div>
                 <h4 class="font-semibold mb-2">Quick Links</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
+                <ul class="space-y-1 text-sm text-gray-600">
                     <li>Dashboard</li>
                     <li>Notes</li>
                     <li>Timetable</li>
                     <li>Events</li>
                 </ul>
             </div>
-
             <div>
                 <h4 class="font-semibold mb-2">More</h4>
-                <ul class="text-sm text-gray-600 space-y-1">
+                <ul class="space-y-1 text-sm text-gray-600">
                     <li>Lost & Found</li>
                     <li>Profile</li>
                     <li>Login</li>
                 </ul>
             </div>
-
         </div>
-
-        <p class="text-center text-sm text-gray-500 mt-8">
-            © 2024 Smart Campus Helper
-        </p>
+        <p class="mt-8 text-center text-sm text-gray-500">© 2026 Smart Campus Helper</p>
     </footer>
 
+    <script src="./js/main.js"></script>
+    <script src="./js/events.js"></script>
 </body>
-
 </html>
+
+
+
+
+

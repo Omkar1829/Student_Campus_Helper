@@ -1,171 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Campus - Login & Register</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        .loading {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .error-message {
-            color: #dc2626;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        .success-message {
-            color: #059669;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
-
-<body class="bg-gray-50 text-gray-800 scroll-smooth">
-
-    <!-- NAVBAR -->
-    <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
             <div class="text-xl font-bold text-indigo-600"><i class="fa-solid fa-book-open"></i> Smart Campus</div>
-            <nav class="hidden md:flex gap-6 font-medium">
-                <a href="./index.html" class="hover:text-indigo-600">Home</a>
-            </nav>
+            <div class="flex items-center gap-3">
+                <a href="./index.html" class="font-medium transition hover:text-indigo-600">Home</a>
+            </div>
         </div>
     </header>
 
-    <section class="min-h-screen py-12 px-6 bg-gradient-to-b from-indigo-50 to-gray-50">
-        <div class="max-w-md mx-auto">
-
-            <div class="flex gap-4 mb-8 border-b">
-                <button id="loginTab" onclick="switchTab('login')" class="flex-1 py-3 font-semibold text-indigo-600 border-b-2 border-indigo-600 transition">
-                    <i class="fa-solid fa-sign-in-alt"></i> Login
-                </button>
-                <button id="registerTab" onclick="switchTab('register')" class="flex-1 py-3 font-semibold text-gray-500 border-b-2 border-transparent hover:text-indigo-600 transition">
-                    <i class="fa-solid fa-user-plus"></i> Register
-                </button>
+    <section class="min-h-screen bg-gradient-to-b from-indigo-50 to-gray-50 px-6 py-12">
+        <div class="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
+            <div class="mb-8 flex gap-4 border-b border-slate-200">
+                <button id="loginTab" onclick="switchTab('login')" class="flex-1 border-b-2 border-indigo-600 py-3 font-semibold text-indigo-600 transition">Login</button>
+                <button id="registerTab" onclick="switchTab('register')" class="flex-1 border-b-2 border-transparent py-3 font-semibold text-gray-500 transition hover:text-indigo-600">Register</button>
             </div>
 
             <div id="loginForm" class="space-y-4">
-                <h2 class="text-2xl font-bold text-center mb-6">Welcome Back</h2>
-
+                <h2 class="mb-6 text-center text-2xl font-bold">Welcome Back</h2>
                 <div>
-                    <label class="block text-sm font-medium mb-2">Email Address</label>
-                    <input type="email" id="loginEmail" placeholder="your.email@university.edu"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="loginEmailError"></div>
+                    <label class="mb-2 block text-sm font-medium">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="your.email@university.edu" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="loginPasswordError"></div>
+                    <label class="mb-2 block text-sm font-medium">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
-                <div class="error-message text-center" id="loginError"></div>
-                <div class="success-message text-center" id="loginSuccess"></div>
-
-                <button id="loginBtn"
-                    class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i class="fa-solid fa-sign-in-alt"></i> Login
-                </button>
-
-                <p class="text-center text-sm text-gray-600">
-                    Don't have an account?
-                    <button onclick="switchTab('register')" class="text-indigo-600 font-semibold hover:underline">Register here</button>
-                </p>
+                <div id="loginError" class="error-message text-center text-sm text-red-600"></div>
+                <div id="loginSuccess" class="success-message text-center text-sm text-emerald-600"></div>
+                <button id="loginBtn" class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"><i class="fa-solid fa-sign-in-alt"></i> Login</button>
+                <p class="text-center text-sm text-slate-600">Don't have an account? <button onclick="switchTab('register')" class="font-semibold text-indigo-600 hover:underline">Register here</button></p>
             </div>
 
-            <div id="registerForm" class="hidden space-y-4">
-                <h2 class="text-2xl font-bold text-center mb-6">Create Account</h2>
-
+            <form id="registerForm" class="hidden space-y-4">
+                <h2 class="mb-6 text-center text-2xl font-bold">Create Account</h2>
                 <div>
-                    <label class="block text-sm font-medium mb-2">Full Name</label>
-                    <input type="text" id="registerName" placeholder="John Doe"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="registerNameError"></div>
+                    <label class="mb-2 block text-sm font-medium">Full Name</label>
+                    <input type="text" id="registerName" placeholder="John Doe" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Email Address</label>
-                    <input type="email" id="registerEmail" placeholder="your.email@university.edu"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="registerEmailError"></div>
+                    <label class="mb-2 block text-sm font-medium">Email Address</label>
+                    <input type="email" id="registerEmail" placeholder="your.email@university.edu" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Branch/Department</label>
-                    <input type="text" id="registerBranch" placeholder="Computer Science"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="registerBranchError"></div>
+                    <label class="mb-2 block text-sm font-medium">Branch/Department</label>
+                    <input type="text" id="registerBranch" placeholder="Computer Science" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Semester</label>
-                    <select id="registerSemester"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
+                    <label class="mb-2 block text-sm font-medium">Semester</label>
+                    <select id="registerSemester" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                         <option value="">Select Semester</option>
-                        <option value="1st">1st Semester</option>
-                        <option value="2nd">2nd Semester</option>
-                        <option value="3rd">3rd Semester</option>
-                        <option value="4th">4th Semester</option>
-                        <option value="5th">5th Semester</option>
-                        <option value="6th">6th Semester</option>
-                        <option value="7th">7th Semester</option>
-                        <option value="8th">8th Semester</option>
+                        <option value="1st Semester">1st Semester</option>
+                        <option value="2nd Semester">2nd Semester</option>
+                        <option value="3rd Semester">3rd Semester</option>
+                        <option value="4th Semester">4th Semester</option>
+                        <option value="5th Semester">5th Semester</option>
+                        <option value="6th Semester">6th Semester</option>
+                        <option value="7th Semester">7th Semester</option>
+                        <option value="8th Semester">8th Semester</option>
                     </select>
-                    <div class="error-message" id="registerSemesterError"></div>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="registerPassword" placeholder="••••••••"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="registerPasswordError"></div>
+                    <label class="mb-2 block text-sm font-medium">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Create a password" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium mb-2">Confirm Password</label>
-                    <input type="password" id="registerConfirm" placeholder="••••••••"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        required>
-                    <div class="error-message" id="registerConfirmError"></div>
+                    <label class="mb-2 block text-sm font-medium">Confirm Password</label>
+                    <input type="password" id="registerConfirm" placeholder="Repeat your password" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none" required>
                 </div>
-
-                <div class="error-message text-center" id="registerError"></div>
-                <div class="success-message text-center" id="registerSuccess"></div>
-
-                <button id="registerBtn"
-                    class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i class="fa-solid fa-user-plus"></i> Register
-                </button>
-
-                <p class="text-center text-sm text-gray-600">
-                    Already have an account?
-                    <button onclick="switchTab('login')" class="text-indigo-600 font-semibold hover:underline">Login here</button>
-                </p>
-            </div>
-
+                <div id="registerError" class="error-message text-center text-sm text-red-600"></div>
+                <div id="registerSuccess" class="success-message text-center text-sm text-emerald-600"></div>
+                <button id="registerBtn" type="button" class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"><i class="fa-solid fa-user-plus"></i> Register</button>
+                <p class="text-center text-sm text-slate-600">Already have an account? <button onclick="switchTab('login')" type="button" class="font-semibold text-indigo-600 hover:underline">Login here</button></p>
+            </form>
         </div>
     </section>
 
-    <script src="js/auth.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/auth.js"></script>
 </body>
-
 </html>
+
+
+
+
+
