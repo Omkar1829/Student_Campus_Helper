@@ -34,6 +34,23 @@ function showMessage(targetId, message, type = 'error') {
     element.classList.toggle('text-emerald-600', type === 'success');
 }
 
+function initPasswordToggles() {
+    document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const targetId = button.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+
+            if (!input) {
+                return;
+            }
+
+            const willShow = input.type === 'password';
+            input.type = willShow ? 'text' : 'password';
+            button.textContent = willShow ? 'Hide' : 'Show';
+        });
+    });
+}
+
 async function getClientIp() {
     try {
         const response = await fetch('https://api.ipify.org?format=json');
@@ -120,6 +137,7 @@ async function handleRegister() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    initPasswordToggles();
     document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
     document.getElementById('registerBtn')?.addEventListener('click', handleRegister);
 });

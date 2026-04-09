@@ -9,44 +9,62 @@
 </head>
 <body class="bg-gray-50 text-gray-800 transition-colors duration-300">
     <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-            <div class="text-xl font-bold text-indigo-600"><i class="fa-solid fa-book-open"></i> Smart Campus</div>
-            <nav class="hidden gap-6 font-medium md:flex">
-                <a href="./index.html" class="transition hover:text-indigo-600">Home</a>
-                <a href="./notes.html" class="transition hover:text-indigo-600">Notes</a>
-                <a href="./timetable.html" class="transition hover:text-indigo-600">Timetable</a>
-                <a href="./events.html" class="transition hover:text-indigo-600">Events</a>
-                <a href="./lost-found.html" class="transition hover:text-indigo-600">Lost & Found</a>
+        <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+            <a href="./index.html" class="text-lg font-bold text-indigo-600 sm:text-xl"><i class="fa-solid fa-book-open"></i> Smart Campus</a>
+            <nav class="hidden items-center gap-6 font-medium md:flex">
+                <a href="./index.html" data-nav-link class="transition hover:text-indigo-600">Dashboard</a>
+                <a href="./notes.html" data-nav-link class="transition hover:text-indigo-600">Notes</a>
+                <a href="./timetable.html" data-nav-link class="transition hover:text-indigo-600">Timetable</a>
+                <a href="./events.html" data-nav-link class="transition hover:text-indigo-600">Events</a>
+                <a href="./lost-found.html" data-nav-link class="transition hover:text-indigo-600">Lost & Found</a>
             </nav>
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-slate-500">Hi, <span data-user-name>Student</span></span>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span class="hidden text-sm font-medium text-slate-500 sm:inline">Hi, <span data-user-name>Student</span></span>
                 <button data-logout id="logoutBtn" class="rounded-xl bg-red-600 px-4 py-2 font-semibold text-white transition hover:bg-red-700"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                <button type="button" data-mobile-toggle aria-expanded="false" aria-label="Toggle navigation menu" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 text-slate-700 transition hover:bg-slate-50 md:hidden">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div data-mobile-menu class="hidden border-t border-slate-200 bg-white px-4 py-4 shadow-md md:hidden">
+            <div class="mx-auto flex max-w-7xl flex-col gap-2">
+                <div class="mb-2 flex items-center justify-between">
+                    <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Menu</p>
+                    <button type="button" data-mobile-close class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600">Close</button>
+                </div>
+                <a href="./index.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 transition hover:bg-slate-50">Home</a>
+                <a href="./notes.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 transition hover:bg-slate-50">Notes</a>
+                <a href="./timetable.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 transition hover:bg-slate-50">Timetable</a>
+                <a href="./events.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 transition hover:bg-slate-50">Events</a>
+                <a href="./lost-found.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 transition hover:bg-slate-50">Lost & Found</a>
+                <a href="./profile.html" data-nav-link data-mobile-link class="rounded-xl px-4 py-3 font-semibold text-indigo-600 transition hover:bg-indigo-50">Profile</a>
+                <button data-logout class="mt-2 rounded-xl bg-red-100 px-4 py-3 font-semibold text-red-600 transition hover:bg-red-200">Logout</button>
             </div>
         </div>
     </header>
 
-    <main class="px-6 py-10">
+    <main class="px-4 py-8 sm:px-6 sm:py-10">
         <div id="profileGate" class="mx-auto max-w-7xl"></div>
         <div id="profileContent" class="mx-auto hidden max-w-7xl space-y-10">
-            <section class="rounded-3xl bg-gradient-to-r from-indigo-200 to-slate-200 px-8 py-10">
+            <section class="rounded-3xl bg-gradient-to-r from-indigo-200 to-slate-200 px-6 py-8 sm:px-8 sm:py-10">
                 <div class="flex flex-wrap items-center justify-between gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="rounded-full border bg-white p-10 text-5xl">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="rounded-full border bg-white p-8 text-4xl sm:p-10 sm:text-5xl">
                             <i class="fa-regular fa-user"></i>
                         </div>
                         <div>
-                            <h2 id="userName" class="text-3xl font-bold">Loading...</h2>
+                            <h2 id="userName" class="text-2xl font-bold sm:text-3xl">Loading...</h2>
                             <p id="userInfo" class="mt-2 text-sm text-slate-600">Fetching your profile details...</p>
                         </div>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
                         <button id="editProfileBtn" class="rounded-xl bg-white px-4 py-2 font-semibold text-slate-800 transition hover:bg-slate-100">Edit Profile</button>
                         <button data-logout id="logoutBtn2" class="rounded-xl bg-red-100 px-4 py-2 font-semibold text-red-600 transition hover:bg-red-200">Sign Out</button>
                     </div>
                 </div>
             </section>
 
-            <section class="grid gap-6 md:grid-cols-4">
+            <section class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
                 <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
                     <h3 id="notesCount" class="text-2xl font-bold text-indigo-600">0</h3>
                     <p class="text-sm text-slate-500">Notes Uploaded</p>
@@ -65,7 +83,7 @@
                 </div>
             </section>
 
-            <section class="grid gap-8 md:grid-cols-3">
+            <section class="grid gap-8 lg:grid-cols-3">
                 <div class="rounded-2xl bg-white p-6 shadow-sm">
                     <h3 class="mb-3 font-semibold">Personal Information</h3>
                     <div class="space-y-2 text-sm text-slate-600">
@@ -93,7 +111,7 @@
                             <input id="editEmail" type="email" placeholder="Email" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
                             <input id="editCourse" type="text" placeholder="Course / Branch" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
                             <input id="editSemester" type="text" placeholder="Semester" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:outline-none">
-                            <div class="flex gap-3">
+                            <div class="flex flex-col gap-3 sm:flex-row">
                                 <button id="saveProfileBtn" type="submit" class="flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
                                 <button id="cancelEditBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 font-semibold transition hover:bg-slate-50">Cancel</button>
                             </div>
@@ -108,7 +126,32 @@
         </div>
     </main>
 
-    <footer class="border-t bg-white py-10 text-center text-sm text-slate-500">© 2026 Smart Campus Helper</footer>
+    <footer class="border-t bg-white px-4 py-10 sm:px-6">
+        <div class="mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="sm:col-span-2">
+                <h3 class="text-lg font-bold text-indigo-600">Smart Campus</h3>
+                <p class="mt-2 max-w-md text-sm text-slate-600">Manage your account, profile details, and quick navigation from any screen size without hunting through the site.</p>
+            </div>
+            <div>
+                <h4 class="mb-2 font-semibold text-slate-900">Explore</h4>
+                <div class="space-y-2 text-sm text-slate-600">
+                    <a href="./index.html" data-footer-link class="block transition hover:text-indigo-600">Dashboard</a>
+                    <a href="./notes.html" data-footer-link class="block transition hover:text-indigo-600">Notes</a>
+                    <a href="./timetable.html" data-footer-link class="block transition hover:text-indigo-600">Timetable</a>
+                    <a href="./events.html" data-footer-link class="block transition hover:text-indigo-600">Events</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="mb-2 font-semibold text-slate-900">Account</h4>
+                <div class="space-y-2 text-sm text-slate-600">
+                    <a href="./lost-found.html" data-footer-link class="block transition hover:text-indigo-600">Lost & Found</a>
+                    <a href="./profile.html" data-footer-link class="block font-semibold text-indigo-600 transition hover:text-indigo-700">Profile</a>
+                    <a href="./login-register.html" data-footer-link class="block transition hover:text-indigo-600">Login</a>
+                </div>
+            </div>
+        </div>
+        <p class="mt-8 text-center text-sm text-slate-500">© 2026 Smart Campus Helper</p>
+    </footer>
 
     <script src="./js/main.js"></script>
     <script src="./js/profile.js"></script>

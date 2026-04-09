@@ -1,6 +1,20 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     const gate = document.getElementById('adminGate');
     const content = document.getElementById('adminContent');
+    const getAdminMobileParts = () => ({
+        toggle: document.querySelector('[data-admin-mobile-toggle]'),
+        menu: document.querySelector('[data-admin-mobile-menu]')
+    });
+    const setAdminMobileMenu = (open) => {
+        const { toggle, menu } = getAdminMobileParts();
+
+        if (!toggle || !menu) {
+            return;
+        }
+
+        menu.classList.toggle('hidden', !open);
+        toggle.setAttribute('aria-expanded', String(open));
+    };
     const renderFullPageMessage = (message) => {
         document.body.innerHTML = `
             <div class="min-h-screen bg-gray-50 p-6 text-gray-800">
@@ -57,5 +71,28 @@
     if (content) {
         content.classList.remove('hidden');
     }
+    setAdminMobileMenu(false);
+
+    document.addEventListener('click', (event) => {
+        const toggle = event.target.closest('[data-admin-mobile-toggle]');
+        const close = event.target.closest('[data-admin-mobile-close]');
+        const menuAction = event.target.closest('[data-admin-mobile-menu] a, [data-admin-mobile-menu] button');
+
+        if (toggle) {
+            const { menu } = getAdminMobileParts();
+            setAdminMobileMenu(menu?.classList.contains('hidden'));
+            return;
+        }
+
+        if (close || menuAction) {
+            setAdminMobileMenu(false);
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            setAdminMobileMenu(false);
+        }
+    });
 });
 

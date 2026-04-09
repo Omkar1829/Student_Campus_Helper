@@ -9,8 +9,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800 transition-colors duration-300">
     <div id="adminGate" class="p-6"></div>
-    <div id="adminContent" class="hidden md:flex">
-        <aside class="min-h-screen w-64 border-r bg-white p-6">
+    <div id="adminContent" class="hidden min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <aside class="hidden min-h-screen border-r bg-white p-6 lg:block">
             <div class="mb-8 flex items-center justify-between"><h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2></div>
             <nav class="space-y-3 text-sm text-slate-600">
                 <a href="admin-dashboard.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Dashboard</a>
@@ -22,18 +22,45 @@
                 <a href="admin-logs.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Logs</a>
             </nav>
         </aside>
-        <main class="flex-1">
-            <header class="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
+        <main class="min-w-0">
+            <div class="border-b bg-white px-4 py-4 shadow-sm lg:hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Admin Panel</p>
+                        <h1 class="text-lg font-semibold text-slate-900">Timetable</h1>
+                    </div>
+                    <button type="button" data-admin-mobile-toggle aria-expanded="false" aria-label="Toggle admin menu" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 text-slate-700">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <div data-admin-mobile-menu class="hidden pt-4">
+                    <div class="mb-3 flex items-center justify-between">
+                        <span class="text-sm font-semibold uppercase tracking-wide text-slate-500">Navigation</span>
+                        <button type="button" data-admin-mobile-close class="rounded-lg border border-slate-300 px-3 py-2 text-sm">Close</button>
+                    </div>
+                    <nav class="space-y-2 text-sm text-slate-600">
+                        <a href="admin-dashboard.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Dashboard</a>
+                        <a href="admin-users.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Students</a>
+                        <a href="admin-notes.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Notes</a>
+                        <a href="admin-events.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Events</a>
+                        <a href="admin-timetable.html" class="block rounded-lg bg-indigo-100 px-4 py-3 font-medium text-indigo-600">Timetable</a>
+                        <a href="admin-lostfound.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Lost & Found</a>
+                        <a href="admin-logs.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Logs</a>
+                        <button data-logout class="mt-2 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Logout</button>
+                    </nav>
+                </div>
+            </div>
+            <header class="flex flex-col gap-4 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <h1 class="text-lg font-semibold">Timetable Management</h1>
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-3">
                     <button id="openAdminTimetableModal" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white">+ Add Slot</button>
-                    <button data-logout class="rounded-xl border border-slate-300 px-4 py-2">Logout</button>
+                    <button data-logout class="hidden rounded-xl border border-slate-300 px-4 py-2 lg:inline-flex">Logout</button>
                 </div>
             </header>
-            <div class="space-y-6 p-6">
+            <div class="space-y-6 p-4 sm:p-6">
                 <input id="adminTimetableSearch" type="text" placeholder="Search timetable..." class="w-full rounded-xl border border-slate-300 px-4 py-3">
-                <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
-                    <table class="w-full text-left text-sm">
+                <div class="overflow-x-auto rounded-2xl bg-white shadow-sm">
+                    <table class="min-w-[920px] w-full text-left text-sm">
                         <thead class="bg-slate-100 text-slate-600">
                             <tr>
                                 <th class="p-4">Day</th>

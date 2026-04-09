@@ -14,6 +14,8 @@ function filterAdminUsers() {
 
 function renderAdminUsers(users) {
     const body = document.getElementById('usersTableBody');
+    const mobileList = document.getElementById('usersMobileList');
+
     body.innerHTML = users.map((user) => `
         <tr class="border-t">
             <td class="p-4 font-medium">${user.name}</td>
@@ -31,6 +33,34 @@ function renderAdminUsers(users) {
             </td>
         </tr>
     `).join('') || '<tr><td colspan="6" class="p-6 text-center text-slate-500">No users found.</td></tr>';
+
+    mobileList.innerHTML = users.map((user) => `
+        <article class="rounded-2xl bg-white p-5 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <h3 class="text-base font-semibold text-slate-900">${user.name}</h3>
+                    <p class="mt-1 break-all text-sm text-slate-500">${user.email}</p>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-medium ${user.role === 'admin' ? 'bg-purple-200 text-purple-800' : 'bg-emerald-200 text-emerald-800'}">
+                    ${user.role}
+                </span>
+            </div>
+            <div class="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+                <div class="rounded-xl bg-slate-50 px-4 py-3">
+                    <p class="text-xs uppercase tracking-wide text-slate-400">Course</p>
+                    <p class="mt-1 font-medium text-slate-700">${user.course || 'N/A'}</p>
+                </div>
+                <div class="rounded-xl bg-slate-50 px-4 py-3">
+                    <p class="text-xs uppercase tracking-wide text-slate-400">Semester</p>
+                    <p class="mt-1 font-medium text-slate-700">${user.semester || 'N/A'}</p>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+                <button class="flex-1 rounded-xl bg-indigo-50 px-4 py-3 font-medium text-indigo-600 transition hover:bg-indigo-100" data-user-edit="${user.id}">Edit</button>
+                <button class="flex-1 rounded-xl bg-red-50 px-4 py-3 font-medium text-red-600 transition hover:bg-red-100" data-user-delete="${user.id}">Delete</button>
+            </div>
+        </article>
+    `).join('') || '<div class="rounded-2xl bg-white p-6 text-center text-sm text-slate-500 shadow-sm">No users found.</div>';
 }
 
 async function loadAdminUsers() {
@@ -132,6 +162,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userForm')?.addEventListener('submit', saveAdminUser);
     document.getElementById('usersSearch')?.addEventListener('input', filterAdminUsers);
     document.getElementById('usersTableBody')?.addEventListener('click', (event) => {
+        const editButton = event.target.closest('[data-user-edit]');
+        const deleteButton = event.target.closest('[data-user-delete]');
+
+        if (editButton) {
+            openEditUser(editButton.dataset.userEdit);
+        }
+
+        if (deleteButton) {
+            deleteAdminUser(deleteButton.dataset.userDelete);
+        }
+    });
+    document.getElementById('usersMobileList')?.addEventListener('click', (event) => {
         const editButton = event.target.closest('[data-user-edit]');
         const deleteButton = event.target.closest('[data-user-delete]');
 

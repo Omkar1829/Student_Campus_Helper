@@ -215,6 +215,14 @@
             element.textContent = loggedIn ? 'Profile' : 'Sign In';
         });
 
+        document.querySelectorAll('[data-profile-link]').forEach((element) => {
+            element.setAttribute('href', loggedIn ? route('profile.html') : route('login-register.html'));
+        });
+
+        document.querySelectorAll('[data-profile-label]').forEach((element) => {
+            element.textContent = loggedIn ? 'Profile' : 'Login';
+        });
+
         lockAuthActions();
     }
 
@@ -282,11 +290,62 @@
         return false;
     }
 
+    function setupMobileMenu() {
+        const toggle = document.querySelector('[data-mobile-toggle]');
+        const menu = document.querySelector('[data-mobile-menu]');
+        const closeButton = document.querySelector('[data-mobile-close]');
+
+        if (!toggle || !menu) {
+            return;
+        }
+
+        const setOpen = (open) => {
+            menu.classList.toggle('hidden', !open);
+            toggle.setAttribute('aria-expanded', String(open));
+            document.body.classList.toggle('overflow-hidden', open);
+        };
+
+        setOpen(false);
+
+        toggle.addEventListener('click', () => {
+            const isHidden = menu.classList.contains('hidden');
+            setOpen(isHidden);
+        });
+
+        closeButton?.addEventListener('click', () => setOpen(false));
+
+        menu.querySelectorAll('a, button[data-logout]').forEach((element) => {
+            element.addEventListener('click', () => setOpen(false));
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                setOpen(false);
+            }
+        });
+    }
+
+    function highlightCurrentLinks() {
+        const current = location.pathname.split('/').pop() || 'index.html';
+
+        document.querySelectorAll('[data-nav-link], [data-footer-link]').forEach((link) => {
+            const href = link.getAttribute('href') || '';
+            const target = href.split('/').pop();
+            const isActive = target === current;
+
+            link.classList.toggle('text-indigo-600', isActive);
+            link.classList.toggle('font-semibold', isActive);
+            link.classList.toggle('bg-indigo-50', isActive && link.hasAttribute('data-mobile-link'));
+        });
+    }
+
     function initSharedUI() {
         initTheme();
         updateNavbarState();
         setupLogoutButtons();
         lockAuthActions();
+        setupMobileMenu();
+        highlightCurrentLinks();
     }
 
     window.CampusApp = {
