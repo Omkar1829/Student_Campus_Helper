@@ -1,119 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
 </head>
-
-<body class="bg-gray-50 text-gray-800 flex">
-
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-white border-r min-h-screen p-6">
-
-        <h2 class="text-xl font-bold text-indigo-600 mb-8">
-            📘 Admin Panel
-        </h2>
-
-        <nav class="space-y-3 text-gray-600">
-
-            <a href="#" class="block bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg">
-                Dashboard
-            </a>
-
-            <a href="admin-users.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
-                👨‍🎓 Students
-            </a>
-
-            <a href="admin-notes.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
-                📄 Notes
-            </a>
-
-            <a href="admin-events.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
-                📅 Events
-            </a>
-
-            <a href="admin-timetable.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
-                ⏰ Timetable
-            </a>
-
-            <a href="admin-lostfound.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
-                📦 Lost & Found
-            </a>
-
-        </nav>
-
-    </aside>
-
-    <!-- MAIN -->
-    <main class="flex-1">
-
-        <!-- TOPBAR -->
-        <header class="bg-white shadow-sm px-6 py-4 flex justify-between">
-            <h1 class="text-lg font-semibold">Admin Dashboard</h1>
-
-            <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                Logout
-            </button>
-        </header>
-
-        <!-- CONTENT -->
-        <div class="p-6">
-
-            <!-- STATS -->
-            <div class="grid md:grid-cols-4 gap-6 mb-8">
-
-                <div class="bg-blue-100 p-6 rounded-xl">
-                    <p class="text-sm text-gray-600">Students</p>
-                    <h2 class="text-2xl font-bold">120</h2>
-                </div>
-
-                <div class="bg-yellow-100 p-6 rounded-xl">
-                    <p class="text-sm text-gray-600">Notes</p>
-                    <h2 class="text-2xl font-bold">45</h2>
-                </div>
-
-                <div class="bg-purple-100 p-6 rounded-xl">
-                    <p class="text-sm text-gray-600">Events</p>
-                    <h2 class="text-2xl font-bold">10</h2>
-                </div>
-
-                <div class="bg-green-100 p-6 rounded-xl">
-                    <p class="text-sm text-gray-600">Lost Items</p>
-                    <h2 class="text-2xl font-bold">8</h2>
-                </div>
-
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="adminGate" class="p-6"></div>
+    <div id="adminContent" class="hidden min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <aside class="hidden min-h-screen border-r bg-white p-6 lg:block">
+            <div class="mb-8 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2>
             </div>
+            <nav class="space-y-3 text-sm text-slate-600">
+                <a href="admin-dashboard.html" class="block rounded-lg bg-indigo-100 px-4 py-2 font-medium text-indigo-600">Dashboard</a>
+                <a href="admin-users.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Students</a>
+                <a href="admin-notes.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Notes</a>
+                <a href="admin-events.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Events</a>
+                <a href="admin-timetable.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Timetable</a>
+                <a href="admin-lostfound.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Lost & Found</a>
+                <a href="admin-logs.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Logs</a>
+            </nav>
+        </aside>
 
-            <!-- RECENT -->
-            <div class="grid md:grid-cols-2 gap-6">
-
-                <div class="bg-white p-5 rounded-xl shadow-sm">
-                    <h3 class="font-semibold mb-3">Recent Events</h3>
-                    <ul class="text-sm space-y-2">
-                        <li>📅 Tech Symposium</li>
-                        <li>📅 Placement Drive</li>
-                    </ul>
+        <main class="min-w-0">
+            <div class="border-b bg-white px-4 py-4 shadow-sm lg:hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Admin Panel</p>
+                        <h1 class="text-lg font-semibold text-slate-900">Dashboard</h1>
+                    </div>
+                    <button type="button" data-admin-mobile-toggle aria-expanded="false" aria-label="Toggle admin menu" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 text-slate-700">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                 </div>
-
-                <div class="bg-white p-5 rounded-xl shadow-sm">
-                    <h3 class="font-semibold mb-3">Recent Notes</h3>
-                    <ul class="text-sm space-y-2">
-                        <li>📄 React Hooks</li>
-                        <li>📄 DBMS Notes</li>
-                    </ul>
+                <div data-admin-mobile-menu class="hidden pt-4">
+                    <div class="mb-3 flex items-center justify-between">
+                        <span class="text-sm font-semibold uppercase tracking-wide text-slate-500">Navigation</span>
+                        <button type="button" data-admin-mobile-close class="rounded-lg border border-slate-300 px-3 py-2 text-sm">Close</button>
+                    </div>
+                    <nav class="space-y-2 text-sm text-slate-600">
+                        <a href="admin-dashboard.html" class="block rounded-lg bg-indigo-100 px-4 py-3 font-medium text-indigo-600">Dashboard</a>
+                        <a href="admin-users.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Students</a>
+                        <a href="admin-notes.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Notes</a>
+                        <a href="admin-events.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Events</a>
+                        <a href="admin-timetable.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Timetable</a>
+                        <a href="admin-lostfound.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Lost & Found</a>
+                        <a href="admin-logs.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Logs</a>
+                        <button data-logout class="mt-2 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700">Logout</button>
+                    </nav>
                 </div>
-
             </div>
+            <header class="flex flex-col gap-4 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div>
+                    <h1 class="text-lg font-semibold">Admin Dashboard</h1>
+                    <p class="text-sm text-slate-500">Live overview of students, notes, events, items, and logs</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-sm text-slate-500">Admin: <span data-user-name>Admin</span></span>
+                    <button data-logout class="hidden rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700 lg:inline-flex">Logout</button>
+                </div>
+            </header>
 
-        </div>
+            <div class="space-y-8 p-4 sm:p-6">
+                <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+                    <div class="rounded-2xl bg-blue-100 p-6"><p class="text-sm text-slate-600">Students</p><h2 id="statStudents" class="mt-2 text-2xl font-bold">0</h2></div>
+                    <div class="rounded-2xl bg-yellow-100 p-6"><p class="text-sm text-slate-600">Notes</p><h2 id="statNotes" class="mt-2 text-2xl font-bold">0</h2></div>
+                    <div class="rounded-2xl bg-purple-100 p-6"><p class="text-sm text-slate-600">Events</p><h2 id="statEvents" class="mt-2 text-2xl font-bold">0</h2></div>
+                    <div class="rounded-2xl bg-green-100 p-6"><p class="text-sm text-slate-600">Lost & Found</p><h2 id="statLostFound" class="mt-2 text-2xl font-bold">0</h2></div>
+                    <div class="rounded-2xl bg-indigo-100 p-6"><p class="text-sm text-slate-600">Login Logs</p><h2 id="statLogins" class="mt-2 text-2xl font-bold">0</h2></div>
+                    <div class="rounded-2xl bg-rose-100 p-6"><p class="text-sm text-slate-600">Activity Logs</p><h2 id="statActivities" class="mt-2 text-2xl font-bold">0</h2></div>
+                </div>
 
-    </main>
+                <div class="grid gap-6 xl:grid-cols-3">
+                    <section class="rounded-2xl bg-white p-5 shadow-sm">
+                        <h3 class="mb-4 font-semibold">Recent Events</h3>
+                        <ul id="recentEvents" class="space-y-3"></ul>
+                    </section>
+                    <section class="rounded-2xl bg-white p-5 shadow-sm">
+                        <h3 class="mb-4 font-semibold">Recent Notes</h3>
+                        <ul id="recentNotes" class="space-y-3"></ul>
+                    </section>
+                    <section class="rounded-2xl bg-white p-5 shadow-sm">
+                        <h3 class="mb-4 font-semibold">Recent Logs</h3>
+                        <ul id="recentLogs" class="space-y-3"></ul>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
 
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-dashboard.js"></script>
 </body>
-
 </html>
+
+
+

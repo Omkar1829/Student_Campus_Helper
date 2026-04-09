@@ -1,192 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Students</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
 </head>
-
-<body class="bg-gray-50 text-gray-800 flex">
-
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-white border-r min-h-screen p-6">
-        <h2 class="text-xl font-bold text-indigo-600 mb-8">📘 Admin Panel</h2>
-
-        <nav class="space-y-3 text-gray-600">
-            <a href="admin-dashboard.html" class="block px-4 py-2 rounded-lg hover:bg-gray-100">Dashboard</a>
-            <a href="#" class="block bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg">Students</a>
-            <a href="admin-notes.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Notes</a>
-            <a href="admin-events.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Events</a>
-            <a href="admin-timetable.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Timetable</a>
-            <a href="admin-lostfound.html" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">Lost & Found</a>
-        </nav>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="flex-1">
-
-        <!-- TOPBAR -->
-        <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-            <h1 class="text-lg font-semibold">Student Management</h1>
-
-            <button onclick="openModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                + Add Student
-            </button>
-        </header>
-
-        <!-- CONTENT -->
-        <div class="p-6">
-
-            <!-- SEARCH -->
-            <div class="mb-4">
-                <input id="search" type="text" placeholder="Search student..."
-                    class="w-full border px-4 py-2 rounded-lg">
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="adminGate" class="p-6"></div>
+    <div id="adminContent" class="hidden min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <aside class="hidden min-h-screen border-r bg-white p-6 lg:block">
+            <div class="mb-8 flex items-center justify-between"><h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2></div>
+            <nav class="space-y-3 text-sm text-slate-600">
+                <a href="admin-dashboard.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Dashboard</a>
+                <a href="admin-users.html" class="block rounded-lg bg-indigo-100 px-4 py-2 font-medium text-indigo-600">Students</a>
+                <a href="admin-notes.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Notes</a>
+                <a href="admin-events.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Events</a>
+                <a href="admin-timetable.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Timetable</a>
+                <a href="admin-lostfound.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Lost & Found</a>
+                <a href="admin-logs.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Logs</a>
+            </nav>
+        </aside>
+        <main class="min-w-0">
+            <div class="border-b bg-white px-4 py-4 shadow-sm lg:hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Admin Panel</p>
+                        <h1 class="text-lg font-semibold text-slate-900">Students</h1>
+                    </div>
+                    <button type="button" data-admin-mobile-toggle aria-expanded="false" aria-label="Toggle admin menu" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 text-slate-700">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <div data-admin-mobile-menu class="hidden pt-4">
+                    <div class="mb-3 flex items-center justify-between">
+                        <span class="text-sm font-semibold uppercase tracking-wide text-slate-500">Navigation</span>
+                        <button type="button" data-admin-mobile-close class="rounded-lg border border-slate-300 px-3 py-2 text-sm">Close</button>
+                    </div>
+                    <nav class="space-y-2 text-sm text-slate-600">
+                        <a href="admin-dashboard.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Dashboard</a>
+                        <a href="admin-users.html" class="block rounded-lg bg-indigo-100 px-4 py-3 font-medium text-indigo-600">Students</a>
+                        <a href="admin-notes.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Notes</a>
+                        <a href="admin-events.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Events</a>
+                        <a href="admin-timetable.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Timetable</a>
+                        <a href="admin-lostfound.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Lost & Found</a>
+                        <a href="admin-logs.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Logs</a>
+                        <button data-logout class="mt-2 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Logout</button>
+                    </nav>
+                </div>
             </div>
-
-            <!-- TABLE -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-
-                <table class="w-full text-sm text-left">
-
-                    <thead class="bg-gray-100 text-gray-600">
-                        <tr>
-                            <th class="p-4">Name</th>
-                            <th>Email</th>
-                            <th>Branch</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="studentTable">
-
-                        <!-- JS DATA -->
-
-                    </tbody>
-
-                </table>
-
+            <header class="flex flex-col gap-4 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div>
+                    <h1 class="text-lg font-semibold">Student Management</h1>
+                    <p class="text-sm text-slate-500">Manage student accounts comfortably on mobile and desktop.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="openUserModal" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white">+ Add Student</button>
+                    <button data-logout class="hidden rounded-xl border border-slate-300 px-4 py-2 lg:inline-flex">Logout</button>
+                </div>
+            </header>
+            <div class="space-y-6 p-4 sm:p-6">
+                <input id="usersSearch" type="text" placeholder="Search students..." class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                <div id="usersMobileList" class="grid gap-4 md:hidden"></div>
+                <div class="hidden overflow-x-auto rounded-2xl bg-white shadow-sm md:block">
+                    <table class="min-w-[760px] w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-600">
+                            <tr>
+                                <th class="p-4">Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Semester</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
             </div>
+        </main>
+    </div>
 
-        </div>
-
-    </main>
-
-    <!-- MODAL -->
-    <div id="modal" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center">
-
-        <div class="bg-white p-6 rounded-xl w-96">
-
-            <h2 class="text-lg font-bold mb-4" id="modalTitle">Add Student</h2>
-
-            <input id="name" placeholder="Name" class="w-full border p-2 mb-2 rounded">
-            <input id="email" placeholder="Email" class="w-full border p-2 mb-2 rounded">
-            <input id="branch" placeholder="Branch" class="w-full border p-2 mb-2 rounded">
-
-            <select id="role" class="w-full border p-2 mb-4 rounded">
-                <option value="student">Student</option>
-                <option value="admin">Admin</option>
-            </select>
-
-            <div class="flex justify-end gap-2">
-                <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
-                <button onclick="saveStudent()" class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+    <div id="userModal" class="fixed inset-0 hidden bg-black/50 px-4 py-6 sm:py-8">
+        <div class="mx-auto max-w-lg rounded-3xl bg-white p-5 shadow-2xl sm:p-6">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 id="userModalTitle" class="text-lg font-bold">Add Student</h2>
+                <button id="closeUserModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
+            <form id="userForm" class="space-y-4">
+                <input id="userName" type="text" placeholder="Name" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                <input id="userEmail" type="email" placeholder="Email" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <input id="userCourse" type="text" placeholder="Course" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                    <input id="userSemester" type="text" placeholder="Semester" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <select id="userRole" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                        <option value="user">Student</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <input id="userPassword" type="password" placeholder="Password" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                </div>
+                <button id="saveUserBtn" type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Create User</button>
+            </form>
         </div>
     </div>
 
-    <script>
-        let students = [
-            { id: 1, name: "Omkar Kale", email: "omkar@gmail.com", branch: "CS", role: "student" },
-            { id: 2, name: "Rahul Patil", email: "rahul@gmail.com", branch: "IT", role: "student" }
-        ];
-
-        let editId = null;
-
-        function renderTable() {
-            const table = document.getElementById("studentTable");
-            table.innerHTML = "";
-
-            students.forEach(s => {
-                table.innerHTML += `
-<tr class="border-t">
-<td class="p-4">${s.name}</td>
-<td>${s.email}</td>
-<td>${s.branch}</td>
-<td>
-<span class="px-2 py-1 rounded text-xs ${s.role == 'admin' ? 'bg-purple-200' : 'bg-green-200'}">
-${s.role}
-</span>
-</td>
-<td>
-<button onclick="editStudent(${s.id})" class="text-indigo-600">Edit</button>
-<button onclick="deleteStudent(${s.id})" class="text-red-500 ml-2">Delete</button>
-</td>
-</tr>`;
-            });
-        }
-
-        renderTable();
-
-        function openModal() {
-            document.getElementById("modal").classList.remove("hidden");
-        }
-
-        function closeModal() {
-            document.getElementById("modal").classList.add("hidden");
-            clearForm();
-        }
-
-        function clearForm() {
-            document.getElementById("name").value = "";
-            document.getElementById("email").value = "";
-            document.getElementById("branch").value = "";
-            editId = null;
-        }
-
-        function saveStudent() {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const branch = document.getElementById("branch").value;
-            const role = document.getElementById("role").value;
-
-            if (editId) {
-                students = students.map(s => s.id == editId ? { ...s, name, email, branch, role } : s);
-            } else {
-                students.push({
-                    id: Date.now(),
-                    name, email, branch, role
-                });
-            }
-
-            closeModal();
-            renderTable();
-        }
-
-        function deleteStudent(id) {
-            students = students.filter(s => s.id !== id);
-            renderTable();
-        }
-
-        function editStudent(id) {
-            const s = students.find(s => s.id === id);
-
-            document.getElementById("name").value = s.name;
-            document.getElementById("email").value = s.email;
-            document.getElementById("branch").value = s.branch;
-            document.getElementById("role").value = s.role;
-
-            editId = id;
-            openModal();
-        }
-
-    </script>
-
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-users.js"></script>
 </body>
-
 </html>
+
+
+

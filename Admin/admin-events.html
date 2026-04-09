@@ -1,245 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Events</title>
-
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
     <style>
-        .notice-board {
-            background: #7c2d12;
-            padding: 16px;
-            border-radius: 14px;
-        }
-
-        .board-inner {
-            background: #991b1b;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .note {
-            background: #fffdf7;
-            padding: 14px;
-            border-radius: 8px;
-            position: relative;
-            transform: rotate(-2deg);
-        }
-
-        .note:nth-child(even) {
-            transform: rotate(2deg);
-        }
-
-        .pin {
-            width: 10px;
-            height: 10px;
-            background: red;
-            border-radius: 50%;
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        .notice-board { background: #7c2d12; padding: 16px; border-radius: 14px; }
+        .board-inner { background: #991b1b; padding: 20px; border-radius: 10px; }
+        .note { background: #fffdf7; padding: 14px; border-radius: 8px; position: relative; transform: rotate(-2deg); }
+        .note:nth-child(even) { transform: rotate(2deg); }
+        .pin { width: 10px; height: 10px; background: red; border-radius: 50%; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); }
     </style>
-
 </head>
-
-<body class="bg-gray-50 text-gray-800 flex">
-
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-white border-r min-h-screen p-6">
-        <h2 class="text-xl font-bold text-indigo-600 mb-8">📘 Admin Panel</h2>
-
-        <nav class="space-y-3 text-gray-600">
-            <a href="admin-dashboard.html" class="block px-4 py-2 rounded-lg">Dashboard</a>
-            <a href="admin-users.html" class="block px-4 py-2 rounded-lg">Students</a>
-            <a href="admin-notes.html" class="block px-4 py-2 rounded-lg">Notes</a>
-            <a href="#" class="block bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg">Events</a>
-            <a href="admin-timetable.html" class="block px-4 py-2 rounded-lg">Timetable</a>
-        </nav>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="flex-1">
-
-        <!-- TOPBAR -->
-        <header class="bg-white shadow-sm px-6 py-4 flex justify-between">
-            <h1 class="text-lg font-semibold">Events Management</h1>
-
-            <button onclick="openModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                + Add Event
-            </button>
-        </header>
-
-        <div class="p-6">
-
-            <!-- 🔴 NOTICE BOARD -->
-            <h3 class="font-bold mb-4">📌 Announcements</h3>
-
-            <div class="notice-board mb-8">
-                <div id="announcementBoard" class="board-inner grid md:grid-cols-3 gap-6"></div>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="adminGate" class="p-6"></div>
+    <div id="adminContent" class="hidden min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <aside class="hidden min-h-screen border-r bg-white p-6 lg:block">
+            <div class="mb-8 flex items-center justify-between"><h2 class="text-xl font-bold text-indigo-600">Admin Panel</h2></div>
+            <nav class="space-y-3 text-sm text-slate-600">
+                <a href="admin-dashboard.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Dashboard</a>
+                <a href="admin-users.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Students</a>
+                <a href="admin-notes.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Notes</a>
+                <a href="admin-events.html" class="block rounded-lg bg-indigo-100 px-4 py-2 font-medium text-indigo-600">Events</a>
+                <a href="admin-timetable.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Timetable</a>
+                <a href="admin-lostfound.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Lost & Found</a>
+                <a href="admin-logs.html" class="block rounded-lg px-4 py-2 transition hover:bg-gray-100">Logs</a>
+            </nav>
+        </aside>
+        <main id="adminEventsRoot" class="min-w-0">
+            <div class="border-b bg-white px-4 py-4 shadow-sm lg:hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Admin Panel</p>
+                        <h1 class="text-lg font-semibold text-slate-900">Events</h1>
+                    </div>
+                    <button type="button" data-admin-mobile-toggle aria-expanded="false" aria-label="Toggle admin menu" class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 text-slate-700">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <div data-admin-mobile-menu class="hidden pt-4">
+                    <div class="mb-3 flex items-center justify-between">
+                        <span class="text-sm font-semibold uppercase tracking-wide text-slate-500">Navigation</span>
+                        <button type="button" data-admin-mobile-close class="rounded-lg border border-slate-300 px-3 py-2 text-sm">Close</button>
+                    </div>
+                    <nav class="space-y-2 text-sm text-slate-600">
+                        <a href="admin-dashboard.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Dashboard</a>
+                        <a href="admin-users.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Students</a>
+                        <a href="admin-notes.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Notes</a>
+                        <a href="admin-events.html" class="block rounded-lg bg-indigo-100 px-4 py-3 font-medium text-indigo-600">Events</a>
+                        <a href="admin-timetable.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Timetable</a>
+                        <a href="admin-lostfound.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Lost & Found</a>
+                        <a href="admin-logs.html" class="block rounded-lg px-4 py-3 transition hover:bg-gray-100">Logs</a>
+                        <button data-logout class="mt-2 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Logout</button>
+                    </nav>
+                </div>
             </div>
-
-            <!-- IMPORTANT -->
-            <h3 class="font-bold mb-4">🔴 Important Events</h3>
-            <div id="importantEvents" class="grid md:grid-cols-3 gap-6 mb-8"></div>
-
-            <!-- OTHER -->
-            <h3 class="font-bold mb-4">📦 Other Events</h3>
-            <div id="otherEvents" class="grid md:grid-cols-3 gap-6"></div>
-
-        </div>
-
-    </main>
-
-    <!-- MODAL -->
-    <div id="modal" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center">
-
-        <div class="bg-white p-6 rounded-xl w-96">
-
-            <h2 class="text-lg font-bold mb-4">Add Event</h2>
-
-            <input id="title" placeholder="Title" class="w-full border p-2 mb-2 rounded">
-            <input id="date" placeholder="Date" class="w-full border p-2 mb-2 rounded">
-
-            <select id="category" class="w-full border p-2 mb-2 rounded">
-                <option value="announcement">Announcement</option>
-                <option value="important">Important</option>
-                <option value="workshop">Workshop</option>
-                <option value="seminar">Seminar</option>
-            </select>
-
-            <input id="expiry" placeholder="Expiry (for announcement)" class="w-full border p-2 mb-2 rounded">
-
-            <div class="flex justify-end gap-2 mt-4">
-                <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
-                <button onclick="saveEvent()" class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+            <header class="flex flex-col gap-4 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <h1 class="text-lg font-semibold">Events Management</h1>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="openAdminEventModal" class="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white">+ Add Event</button>
+                    <button data-logout class="hidden rounded-xl border border-slate-300 px-4 py-2 lg:inline-flex">Logout</button>
+                </div>
+            </header>
+            <div class="space-y-8 p-4 sm:p-6">
+                <input id="adminEventsSearch" type="text" placeholder="Search events..." class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                <section>
+                    <h3 class="mb-4 font-semibold">Announcements</h3>
+                    <div class="notice-board"><div id="adminAnnouncementBoard" class="board-inner grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div></div>
+                </section>
+                <section>
+                    <h3 class="mb-4 font-semibold">Important Events</h3>
+                    <div id="adminImportantEvents" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+                </section>
+                <section>
+                    <h3 class="mb-4 font-semibold">Other Events</h3>
+                    <div id="adminOtherEvents" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+                </section>
             </div>
+        </main>
+    </div>
 
+    <div id="adminEventModal" class="fixed inset-0 hidden bg-black/50 px-4 py-8" data-edit-id="">
+        <div class="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 id="adminEventModalTitle" class="text-lg font-bold">Add Event</h2>
+                <button id="closeAdminEventModal" class="rounded-xl border border-slate-300 px-3 py-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="adminEventForm" class="space-y-4">
+                <input id="adminEventTitle" type="text" placeholder="Title" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                <textarea id="adminEventDescription" rows="4" placeholder="Description" class="w-full rounded-xl border border-slate-300 px-4 py-3" required></textarea>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <input id="adminEventDate" type="date" class="w-full rounded-xl border border-slate-300 px-4 py-3" required>
+                    <input id="adminEventTime" type="time" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <input id="adminEventLocation" type="text" placeholder="Location" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                    <select id="adminEventType" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+                        <option value="announcement">Announcement</option>
+                        <option value="important">Important</option>
+                        <option value="placement">Placement</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                <button id="saveAdminEventBtn" type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white">Create Event</button>
+            </form>
         </div>
     </div>
 
-    <script>
-
-        let events = [
-            { id: 1, title: "Exam Notice", date: "April 22", category: "announcement", expiry: "April 30" },
-            { id: 2, title: "Placement Drive", date: "April 20", category: "important" },
-            { id: 3, title: "Coding Workshop", date: "April 10", category: "workshop" }
-        ];
-
-        let editId = null;
-
-        function renderEvents() {
-
-            let announcementHTML = "";
-            let importantHTML = "";
-            let otherHTML = "";
-
-            events.forEach(e => {
-
-                if (e.category === "announcement") {
-                    announcementHTML += `
-<div class="note">
-<div class="pin"></div>
-<h3 class="font-semibold">${e.title}</h3>
-<p class="text-xs mt-2">Valid till: ${e.expiry || '-'}</p>
-
-<div class="flex justify-end gap-2 mt-3">
-<button onclick="editEvent(${e.id})">✏️</button>
-<button onclick="deleteEvent(${e.id})">🗑️</button>
-</div>
-</div>`;
-                }
-
-                else if (e.category === "important") {
-                    importantHTML += eventCard(e);
-                }
-
-                else {
-                    otherHTML += eventCard(e);
-                }
-
-            });
-
-            document.getElementById("announcementBoard").innerHTML = announcementHTML;
-            document.getElementById("importantEvents").innerHTML = importantHTML;
-            document.getElementById("otherEvents").innerHTML = otherHTML;
-
-        }
-
-        function eventCard(e) {
-            return `
-<div class="bg-white p-5 rounded-xl border">
-
-<h3 class="font-semibold">${e.title}</h3>
-<p class="text-sm text-gray-500">${e.date}</p>
-
-<div class="flex justify-end gap-2 mt-4">
-<button onclick="editEvent(${e.id})" class="text-indigo-600">Edit</button>
-<button onclick="deleteEvent(${e.id})" class="text-red-500">Delete</button>
-</div>
-
-</div>`;
-        }
-
-        renderEvents();
-
-        function openModal() {
-            document.getElementById("modal").classList.remove("hidden");
-        }
-
-        function closeModal() {
-            document.getElementById("modal").classList.add("hidden");
-            clearForm();
-        }
-
-        function clearForm() {
-            document.getElementById("title").value = "";
-            document.getElementById("date").value = "";
-            document.getElementById("category").value = "announcement";
-            document.getElementById("expiry").value = "";
-            editId = null;
-        }
-
-        function saveEvent() {
-
-            const title = document.getElementById("title").value;
-            const date = document.getElementById("date").value;
-            const category = document.getElementById("category").value;
-            const expiry = document.getElementById("expiry").value;
-
-            if (editId) {
-                events = events.map(e => e.id == editId ? { ...e, title, date, category, expiry } : e);
-            } else {
-                events.push({ id: Date.now(), title, date, category, expiry });
-            }
-
-            closeModal();
-            renderEvents();
-        }
-
-        function deleteEvent(id) {
-            events = events.filter(e => e.id !== id);
-            renderEvents();
-        }
-
-        function editEvent(id) {
-            const e = events.find(e => e.id === id);
-
-            document.getElementById("title").value = e.title;
-            document.getElementById("date").value = e.date;
-            document.getElementById("category").value = e.category;
-            document.getElementById("expiry").value = e.expiry || "";
-
-            editId = id;
-            openModal();
-        }
-
-    </script>
-
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-events.js"></script>
 </body>
-
 </html>
+
+
+
